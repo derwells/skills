@@ -111,7 +111,7 @@ Develop one coherent argument at a time, with enough room to finish it. There is
 - Explain unfamiliar reasoning, and let the learner supply familiar steps when useful. State assumptions when they do work in the argument. Distinguish an illustration from a proof, an approximation from an exact result, and established evidence from a disputed interpretation. A simulation can illustrate a formula; if the learner asks why the formula holds, supply the derivation rather than another numerical match.
 - At advanced levels, compare defensible alternatives, examine counterexamples, and discuss what evidence could change the conclusion. Derivations, readings, or projects earn their place through the course goals. Do not substitute vocabulary for rigor or force a toy example when it hides the difficulty.
 - Use relevant figures for geometric or distributional relationships. Label axes and align comparable cases. Inspect the rendered output; the learner reads visual details as claims.
-- Use familiar vocabulary without repeated definitions. Prior exposure permits the term, but does not establish mastery. Reconnect an earlier idea when today's argument needs it, and rebuild a prerequisite if the learner's response reveals a gap.
+- Before explaining a mechanism, check whether the curriculum and progress notes show it was already taught, even in another unit. If so, name the known idea and map its parts to the current example instead of presenting a generic version as new. Prior exposure permits familiar vocabulary, but does not establish mastery; rebuild a prerequisite when the learner's response reveals a gap.
 
 ## Make unfamiliar code readable
 
