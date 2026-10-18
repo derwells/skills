@@ -21,7 +21,7 @@ This repo started as just the `learn` skill. It now holds the rest of the ones t
 Clone the repo once, then link the skills you want into your harness's skills folder.
 
 ```bash
-git clone https://github.com/derwells/learn-skill ~/src/derwells-skills
+git clone https://github.com/derwells/skills ~/src/derwells-skills
 
 # Claude Code (opencode reads this path too)
 mkdir -p ~/.claude/skills
@@ -41,6 +41,12 @@ git -C ~/src/derwells-skills pull
 If you'd rather not keep a clone, copy a single folder from `skills/` into your skills directory instead. You'll just have to copy it again to get changes.
 
 ### If you installed learn before the move
+
+This repo used to be called `learn-skill`. GitHub redirects the old URL, so existing clones still pull, but you can point yours at the new name:
+
+```bash
+git -C <your clone> remote set-url origin https://github.com/derwells/skills
+```
 
 The old instructions cloned this whole repo straight into `~/.claude/skills/learn`. That worked when the repo was only `learn`. Now `learn` lives in `skills/learn/`, so a plain `git pull` in the old location leaves no `SKILL.md` at the top and the skill stops loading.
 

@@ -9,7 +9,7 @@ I made this because I couldn't study consistently after work. Textbook exercises
 This skill is part of [Derick Wells' skills](../../README.md). Clone the collection and link `learn` into your harness's skills directory. Any harness that supports [Agent Skills](https://agentskills.io) should work (Claude Code, opencode, Codex, Gemini CLI, ...):
 
 ```bash
-git clone https://github.com/derwells/learn-skill ~/src/derwells-skills
+git clone https://github.com/derwells/skills ~/src/derwells-skills
 
 # Claude Code (opencode reads this path too)
 ln -s ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
