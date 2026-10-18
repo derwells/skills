@@ -10,7 +10,7 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SPEC_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 NAME = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-BUNDLED = re.compile(r"(?<![\w/.-])((?:references|scripts|assets|agents|examples)/[\w./-]+\.\w+)")
+BUNDLED = re.compile(r"(?<![\w/.-])((?:references|scripts|assets|agents|examples|benchmarks)/[\w./-]+\.\w+)")
 LINK = re.compile(r"\]\(([^)\s]+)\)")
 
 errors = []

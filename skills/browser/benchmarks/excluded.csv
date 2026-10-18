@@ -1,0 +1,18 @@
+source,arm,reason,count
+benchmark-matrix,A,CLI did not enforce turn cap,3
+benchmark-matrix,A,setup smoke test,1
+benchmark-matrix,A,stream parser line limit,3
+benchmark-matrix,B,revocation monitor ended before form opened,3
+benchmark-matrix,B,setup smoke test,1
+benchmark-matrix,B,stream parser line limit,1
+benchmark-matrix,C,CLI prompt delimiter error,1
+benchmark-matrix,C,secret exposed in Playwright MCP snapshot before site correction,13
+benchmark-matrix,D,setup smoke test,1
+benchmark-matrix,E,setup smoke test,6
+benchmark-matrix,F,isolated consent stub used wrong site origin,1
+jev-pilot-validation,G,site process served stale result page after a CLI change; restarted,9
+jev-pilot-validation,G,CLI prompt parsed as a tool option; option syntax fixed,1
+jev-pilot-validation,G,temporary handoff stub stopped during a run; restarted,1
+jev-pilot-validation,G,peer site process stopped between runs; separate site process started,1
+jev-pilot-validation,G,"site redirected to login twice after submit; runner retry bound raised, replacement T4 run passed",1
+jev-pilot-validation,G,"MFA verify redirected to login while wait expected the app form; wait fixed, replacement T4 run passed",1
