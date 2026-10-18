@@ -1,0 +1,345 @@
+#!/usr/bin/env python3
+"""MCP stdio server exposing MiMo web search to claudex sessions.
+
+Claude Code's built-in WebSearch is an Anthropic server tool; MiMo's
+Anthropic-compatible endpoint cannot run it. MiMo search exists only on the
+OpenAI Chat Completions protocol as a `web_search` tool, so this bridge makes
+one bounded Chat Completions call per tool call and returns the source
+annotations MiMo attached. Model inference for the session stays wherever the
+claudex wrapper sent it.
+
+Routes: token plan (OpenAI-compatible /v1 on the plan cluster) and PAYG
+(https://api.xiaomimimo.com/v1). CLAUDEX_SEARCH_ROUTE=auto|plan|paygo, default
+auto: plan first, and PAYG only if the plan rejects the tool with
+"webSearchEnabled is false" (no search ran, so nothing is billed twice).
+Keys: MIMO_API_KEY or ~/.claude/mimo_token (plan), MIMO_PAYGO_KEY or
+~/.claude/mimo_paygo_token (PAYG), the same sources as the wrapper.
+
+Stdlib only. Installed next to the `claudex` wrapper; see the claudex skill's SKILL.md.
+"""
+import json
+import os
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
+from urllib.parse import urlparse
+
+VERSION = "1.0.0"
+TOOL = "web_search"
+PAYGO_BASE = "https://api.xiaomimimo.com/v1"
+DEFAULT_PLAN_BASE = "https://token-plan-sgp.xiaomimimo.com/v1"
+MODEL = os.environ.get("CLAUDEX_SEARCH_MODEL", "mimo-v2.6-flash")
+TIMEOUT_S = float(os.environ.get("CLAUDEX_SEARCH_TIMEOUT", "60"))
+MAX_CALLS = int(os.environ.get("CLAUDEX_SEARCH_MAX_CALLS", "40"))
+MAX_QUERY = 400
+MAX_LIMIT = 10
+DEFAULT_LIMIT = 5
+SNIPPET_CHARS = 600
+LOG_PATH = os.environ.get(
+    "CLAUDEX_SEARCH_LOG", os.path.expanduser("~/.cache/claudex/search.jsonl"))
+PLAN_DISABLED = "webSearchEnabled is false"
+
+DESCRIPTION = (
+    "Live web search through Xiaomi MiMo's web_search plugin. Returns real "
+    "result URLs, titles, site names, publish times and snippets taken from "
+    "MiMo's source annotations, plus the route used and search/token usage. "
+    "One call runs exactly one search keyword (max_keyword=1). Each call is "
+    "billed (about $0.005 per search plus model tokens), and calls per session "
+    "are capped, so write one precise query per call rather than many variants. "
+    "Use this instead of WebSearch, which does not work on MiMo. Read pages "
+    "with WebFetch afterwards when snippets are not enough.")
+
+INPUT_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "query": {"type": "string", "minLength": 1, "maxLength": MAX_QUERY,
+                  "description": "One search query, as you would type it into a search engine."},
+        "limit": {"type": "integer", "minimum": 1, "maximum": MAX_LIMIT,
+                  "default": DEFAULT_LIMIT,
+                  "description": "Maximum result pages to request (1-10)."},
+    },
+    "required": ["query"],
+    "additionalProperties": False,
+}
+
+
+class SearchError(Exception):
+    """A failure to surface to the agent as an MCP tool error."""
+
+    def __init__(self, message, route=None, status=None):
+        super().__init__(message)
+        self.route, self.status = route, status
+
+
+def read_key(env, path):
+    if os.environ.get(env):
+        return os.environ[env].strip()
+    try:
+        with open(os.path.expanduser(path)) as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
+def plan_base():
+    """OpenAI-compatible base on the same regional cluster as the wrapper."""
+    url = os.environ.get("CLAUDEX_PLAN_URL", "").rstrip("/")
+    if not url:
+        return DEFAULT_PLAN_BASE
+    return re.sub(r"/anthropic$", "", url) + "/v1"
+
+
+def routes():
+    """Ordered (name, base, key) candidates for the configured route mode."""
+    mode = os.environ.get("CLAUDEX_SEARCH_ROUTE", "auto").strip() or "auto"
+    plan = ("plan", plan_base(), read_key("MIMO_API_KEY", "~/.claude/mimo_token"))
+    paygo = ("paygo", PAYGO_BASE, read_key("MIMO_PAYGO_KEY", "~/.claude/mimo_paygo_token"))
+    if mode == "plan":
+        chosen = [plan]
+    elif mode == "paygo":
+        chosen = [paygo]
+    elif mode == "auto":
+        chosen = [plan, paygo]
+    else:
+        raise SearchError(f"CLAUDEX_SEARCH_ROUTE={mode!r} is not auto, plan or paygo")
+    chosen = [r for r in chosen if r[2]]
+    if not chosen:
+        raise SearchError("no MiMo key for search: set MIMO_API_KEY/MIMO_PAYGO_KEY "
+                          "or write ~/.claude/mimo_token / ~/.claude/mimo_paygo_token")
+    return chosen
+
+
+def redact(text, keys):
+    for k in keys:
+        if k:
+            text = text.replace(k, "<redacted>")
+    text = re.sub(r"(?i)bearer\s+\S+", "Bearer <redacted>", text)
+    text = re.sub(r"\b(?:sk|tp|ttp)-[A-Za-z0-9_-]{8,}", "<redacted>", text)
+    return text[:300]
+
+
+def payload(query, limit):
+    return {
+        "model": MODEL,
+        "messages": [
+            {"role": "system", "content": "You are a search relay. Search once, then reply in one short sentence."},
+            {"role": "user", "content": query},
+        ],
+        "max_completion_tokens": 400,
+        "stream": False,
+        "thinking": {"type": "disabled"},
+        "tools": [{"type": "web_search", "max_keyword": 1, "force_search": True, "limit": limit}],
+        "tool_choice": "auto",
+    }
+
+
+def post(base, key, body, opener=urllib.request.urlopen):
+    req = urllib.request.Request(
+        base + "/chat/completions", data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer " + key})
+    with opener(req, timeout=TIMEOUT_S) as resp:
+        return resp.status, json.loads(resp.read().decode())
+
+
+def api_error(exc, keys):
+    """(status, message) from an HTTPError without echoing credentials."""
+    try:
+        raw = exc.read().decode(errors="replace")
+    except Exception:
+        raw = ""
+    msg = raw
+    try:
+        err = json.loads(raw).get("error", {})
+        msg = " / ".join(str(err[k]) for k in ("message", "param", "type") if err.get(k))
+    except Exception:
+        pass
+    return exc.code, redact(msg or str(exc.reason), keys)
+
+
+class Searcher:
+    def __init__(self, opener=urllib.request.urlopen, log_path=LOG_PATH):
+        self.opener, self.log_path = opener, log_path
+        self.calls = 0
+        self.plan_disabled = False
+
+    def search(self, query, limit=DEFAULT_LIMIT):
+        if not isinstance(query, str) or not query.strip():
+            raise SearchError("query must be a non-empty string")
+        query = query.strip()
+        if len(query) > MAX_QUERY:
+            raise SearchError(f"query is longer than {MAX_QUERY} characters")
+        if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= MAX_LIMIT:
+            raise SearchError(f"limit must be an integer from 1 to {MAX_LIMIT}")
+        if self.calls >= MAX_CALLS:
+            raise SearchError(f"search cap reached: {MAX_CALLS} calls this session "
+                              "(raise CLAUDEX_SEARCH_MAX_CALLS for a new session)")
+        candidates = routes()
+        keys = [k for _, _, k in candidates]
+        if self.plan_disabled and len(candidates) > 1:
+            candidates = [r for r in candidates if r[0] != "plan"]
+        self.calls += 1
+        body = payload(query, limit)
+        notes = []
+        for i, (name, base, key) in enumerate(candidates):
+            started = time.monotonic()
+            try:
+                status, data = post(base, key, body, self.opener)
+            except urllib.error.HTTPError as e:
+                status, msg = api_error(e, keys)
+                if (name == "plan" and status == 400 and PLAN_DISABLED in msg
+                        and i + 1 < len(candidates)):
+                    self.plan_disabled = True
+                    self.log(query, name, status, error=msg)
+                    notes.append("plan route: web search not enabled on the token plan (HTTP 400), tried PAYG")
+                    continue
+                self.log(query, name, status, error=msg)
+                prior = "".join(n + "; " for n in notes)
+                raise SearchError(f"{prior}MiMo {name} route HTTP {status}: {msg}", name, status)
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
+                msg = redact(str(getattr(e, "reason", e)), keys)
+                self.log(query, name, None, error=msg)
+                raise SearchError(f"MiMo {name} route request failed: {msg}", name)
+            except ValueError as e:
+                self.log(query, name, None, error="invalid JSON")
+                raise SearchError(f"MiMo {name} route returned invalid JSON: {redact(str(e), keys)}", name)
+            result = extract(data)
+            result.update(query=query, route=name, host=urlparse(base).hostname,
+                          http_status=status, notes=notes,
+                          elapsed_s=round(time.monotonic() - started, 2),
+                          session_calls=self.calls, session_cap=MAX_CALLS)
+            self.log(query, name, status, results=len(result["results"]),
+                     usage=result["usage"], request_id=result["request_id"])
+            return result
+        raise SearchError("no usable MiMo search route")
+
+    def log(self, query, route, status, **extra):
+        if not self.log_path:
+            return
+        try:
+            os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
+            fd = os.open(self.log_path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+            with os.fdopen(fd, "a") as f:
+                f.write(json.dumps({"ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                                    "query": query, "route": route, "status": status,
+                                    **extra}) + "\n")
+        except OSError:
+            pass
+
+
+def extract(data):
+    """Source annotations, model text and accounting from a completion."""
+    try:
+        message = data["choices"][0]["message"]
+    except (KeyError, IndexError, TypeError):
+        raise SearchError("MiMo response has no choices[0].message")
+    results, seen = [], set()
+    for a in message.get("annotations") or []:
+        url = a.get("url") if isinstance(a, dict) else None
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        results.append({
+            "title": (a.get("title") or "").strip()[:300],
+            "url": url,
+            "site_name": a.get("site_name") or "",
+            "publish_time": a.get("publish_time") or "",
+            "snippet": " ".join((a.get("summary") or "").split())[:SNIPPET_CHARS],
+        })
+    usage = data.get("usage") or {}
+    return {
+        "results": results,
+        "model": data.get("model", ""),
+        "request_id": data.get("id", ""),
+        "model_text": (message.get("content") or "").strip()[:1000],
+        "usage": {
+            "web_search_usage": usage.get("web_search_usage"),
+            "prompt_tokens": usage.get("prompt_tokens"),
+            "completion_tokens": usage.get("completion_tokens"),
+        },
+    }
+
+
+def render(r):
+    ws = r["usage"].get("web_search_usage") or {}
+    lines = [f'MiMo web search: "{r["query"]}"',
+             f'route {r["route"]} ({r["host"]}), model {r["model"]}, HTTP {r["http_status"]}, '
+             f'{r["elapsed_s"]}s, request {r["request_id"]}']
+    lines += r["notes"]
+    lines.append(f'{len(r["results"])} results from MiMo source annotations:')
+    for i, x in enumerate(r["results"], 1):
+        meta = " · ".join(v for v in (x["site_name"], x["publish_time"]) if v)
+        lines += [f'{i}. {x["title"] or "(no title)"}', f'   {x["url"]}']
+        if meta:
+            lines.append(f"   {meta}")
+        if x["snippet"]:
+            lines.append(f'   {x["snippet"]}')
+    if r["model_text"]:
+        lines.append(f'MiMo summary (model text, not a source): {r["model_text"]}')
+    lines.append(f'Usage: search tool_usage={ws.get("tool_usage")} page_usage={ws.get("page_usage")}, '
+                 f'tokens prompt={r["usage"]["prompt_tokens"]} completion={r["usage"]["completion_tokens"]}; '
+                 f'session calls {r["session_calls"]}/{r["session_cap"]}')
+    return "\n".join(lines)
+
+
+def call_tool(searcher, name, args):
+    if name != TOOL:
+        return {"isError": True, "content": [{"type": "text", "text": f"unknown tool {name!r}"}]}
+    args = args or {}
+    extra = set(args) - {"query", "limit"}
+    try:
+        if extra:
+            raise SearchError(f"unexpected arguments: {sorted(extra)}")
+        r = searcher.search(args.get("query"), args.get("limit", DEFAULT_LIMIT))
+    except SearchError as e:
+        return {"isError": True, "content": [{"type": "text", "text": f"web_search failed: {e}"}]}
+    if not r["results"]:
+        ws = r["usage"].get("web_search_usage")
+        return {"isError": True, "structuredContent": r, "content": [{"type": "text", "text":
+                f'web_search returned no source annotations for "{r["query"]}" '
+                f'(route {r["route"]}, search usage {ws}). This is an empty result, '
+                "not a success: rephrase once or report that nothing was found."}]}
+    return {"content": [{"type": "text", "text": render(r)}], "structuredContent": r}
+
+
+def handle(searcher, msg):
+    method, mid = msg.get("method"), msg.get("id")
+    if mid is None:
+        return None  # notification
+    if method == "initialize":
+        version = (msg.get("params") or {}).get("protocolVersion") or "2025-06-18"
+        result = {"protocolVersion": version, "capabilities": {"tools": {}},
+                  "serverInfo": {"name": "claudex-mimo-search", "version": VERSION}}
+    elif method == "ping":
+        result = {}
+    elif method == "tools/list":
+        result = {"tools": [{"name": TOOL, "title": "MiMo web search",
+                             "description": DESCRIPTION, "inputSchema": INPUT_SCHEMA}]}
+    elif method == "tools/call":
+        p = msg.get("params") or {}
+        result = call_tool(searcher, p.get("name"), p.get("arguments"))
+    else:
+        return {"jsonrpc": "2.0", "id": mid,
+                "error": {"code": -32601, "message": f"method not found: {method}"}}
+    return {"jsonrpc": "2.0", "id": mid, "result": result}
+
+
+def main():
+    searcher = Searcher()
+    for line in sys.stdin:
+        if not line.strip():
+            continue
+        try:
+            msg = json.loads(line)
+        except ValueError:
+            reply = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}}
+        else:
+            reply = handle(searcher, msg)
+        if reply is not None:
+            sys.stdout.write(json.dumps(reply) + "\n")
+            sys.stdout.flush()
+
+
+if __name__ == "__main__":
+    main()

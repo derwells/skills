@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Moved to `skills/learn/` when the repository became a collection of skills. Existing clones need the migration steps in the top-level README. The `learn-standalone` tag keeps the old single-skill layout.
 - Rebuilt teaching around professor-led lessons with a central question, developed reasoning, contrasts, and guided application.
 - Removed the fixed explanation length, mandatory stops, delayed-question rules, and automatic probe backlog.
 - Expanded course preparation to include worked solutions, comparisons, assumptions, and tasks with decreasing help.

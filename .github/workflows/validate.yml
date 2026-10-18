@@ -7,33 +7,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install pyyaml
-      - name: Check SKILL.md against the Agent Skills spec
-        run: |
-          python3 - <<'PY'
-          import pathlib, re, sys, yaml
-
-          text = pathlib.Path("SKILL.md").read_text()
-          parts = text.split("---\n")
-          fm = yaml.safe_load(parts[1])
-
-          SPEC_FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
-          errors = []
-
-          extra = set(fm) - SPEC_FIELDS
-          if extra:
-              errors.append(f"non-spec frontmatter fields (break claude.ai packaging): {sorted(extra)}")
-          if not fm.get("description"):
-              errors.append("description is required")
-          elif len(fm["description"]) > 1536:
-              errors.append(f"description is {len(fm['description'])} chars (limit 1536)")
-          if fm.get("compatibility") and len(fm["compatibility"]) > 500:
-              errors.append("compatibility exceeds 500 chars")
-
-          for ref in set(re.findall(r"references/[\w-]+\.md", text)):
-              if not pathlib.Path(ref).is_file():
-                  errors.append(f"SKILL.md points at missing file: {ref}")
-
-          for err in errors:
-              print(f"ERROR: {err}")
-          sys.exit(1 if errors else 0)
-          PY
+      - name: Check every SKILL.md against the Agent Skills spec
+        run: python3 scripts/validate.py

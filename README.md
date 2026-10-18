@@ -1,76 +1,88 @@
-# learn
+# Derick Wells' skills
 
-A portable skill for a professor-led course of study. Give it a topic and it researches a curriculum, prepares examples and contrasts, and leads lessons with room for questions. It keeps notes on what you understand and where you need help, so the course survives months of short sessions.
+These are the agent skills I wrote for my own work with Claude Code and Codex. Each one is a folder with a `SKILL.md` that tells the agent when to use it and how. They follow the [Agent Skills](https://agentskills.io) format, so other harnesses that read that format should pick them up too.
 
-I made this because I couldn't study consistently after work. Textbook exercises want a full hour of deep focus and I never had that at 9pm. These lessons are short enough to do tired. The tutor remembers where you left off, you just show up.
+This repo started as just the `learn` skill. It now holds the rest of the ones that are general enough to share. Take whichever are useful to you.
+
+## What's here
+
+| Skill | What it does | How it starts |
+|---|---|---|
+| [learn](skills/learn) | Runs a long course of study: researches a curriculum, leads short lessons, keeps notes on what you understand. | `/learn`, or asking for a lesson |
+| [spell-out](skills/spell-out) | Writes full, careful explanations for when you want to understand a topic in depth. `learn` uses it. | "spell it out", "walk me through", "teach me" |
+| [handoff](skills/handoff) | Prints a one-paragraph prompt you paste into a fresh session so it picks up where you left off. | Only when you type `/handoff` |
+| [model-check](skills/model-check) | Writes a small TLA+ model of real code, checks it with TLC, and replays it against real runs before trusting it. For queues, retries, locks, timeouts and similar ordering bugs. | Changes to concurrency or protocol code, or asking for a model check |
+| [ai-image](skills/ai-image) | Generates and edits images with OpenAI GPT Image 2 or Google Gemini over plain `curl`, plus prompt templates and post-processing commands. Uses the provider you name and asks if you don't. | `/ai-image`, or asking for an image from either provider |
+| [claudex](skills/claudex) | Runs Claude Code headless against Xiaomi MiMo models for wide, cheap reading (many files, many repos). It only gathers; your main agent decides and edits. Wrapper scripts are in `scripts/`. | `/claudex`, or a big search task |
+| [jev](skills/jev) | Uses Jev, TypeSafe's judging model, through my [sieve](https://github.com/derwells/sieve) MCP server to score or filter a list of items against a question. | Before a broad grep or research fan-out, or with a long list to triage |
 
 ## Install
 
-Works with any harness that supports [Agent Skills](https://agentskills.io) (Claude Code, opencode, Codex, Gemini CLI, ...). Clone into your harness's skills directory:
+Clone the repo once, then link the skills you want into your harness's skills folder.
 
 ```bash
+git clone https://github.com/derwells/learn-skill ~/src/derwells-skills
+
 # Claude Code (opencode reads this path too)
-git clone https://github.com/derwells/learn-skill ~/.claude/skills/learn
+mkdir -p ~/.claude/skills
+ln -s ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
 
 # Codex and others
-git clone https://github.com/derwells/learn-skill ~/.agents/skills/learn
+mkdir -p ~/.agents/skills
+ln -s ~/src/derwells-skills/skills/learn ~/.agents/skills/learn
 ```
 
-Needs web search (curriculum research), `jq` or `python3` (notebook validation), and Jupyter via `uv` for lesson notebooks.
+Swap `learn` for any other skill name. To update, pull:
 
-## Use
-
-| Say | What happens |
-|---|---|
-| `/learn new bayesian statistics` | Researches and writes the curriculum. Expensive, done once |
-| `/learn` or "today's lesson" | ~30 min session |
-| `/learn status` | Progress across courses |
-| `/learn review` | Revisit shaky ideas, no new material |
-| `/learn curate` | No lesson. Retune how the course is run |
-
-Courses live in `.learning/` at the project root:
-
-```
-.learning/
-├── learner.md             # what the tutor knows about you, across courses
-└── <course>/
-    ├── curriculum.md      # units, lessons, the intuition each one must land
-    ├── progress.json      # tutor's notebook: what clicked, what's shaky, why
-    ├── materials/         # lesson arguments, worked examples, contrasts, applications
-    ├── notebooks/         # one Jupyter notebook per lesson
-    └── sessions/          # short log per session
+```bash
+git -C ~/src/derwells-skills pull
 ```
 
-Worth committing `.learning/` if the project is a repo.
+If you'd rather not keep a clone, copy a single folder from `skills/` into your skills directory instead. You'll just have to copy it again to get changes.
 
-## How it teaches
+### If you installed learn before the move
 
-- Leads each lesson around a question and develops the reasoning needed to answer it.
-- Uses deliberate comparisons to show what distinguishes concepts, why methods work, and where assumptions matter.
-- Connects examples to the actual mathematics. Explains choices and valid steps rather than merely naming them.
-- Adapts explanation length to the argument and your response. You can interrupt without having to direct the lesson yourself.
-- Moves from worked examples to guided and independent application when useful. Listening and optional discussion remain valid choices.
-- Uses executed notebook demonstrations and precise figures. Keeps pending prediction answers out of view.
-- Preserves your questions and pace. Thirty minutes is a guideline; a lesson can span sessions.
+The old instructions cloned this whole repo straight into `~/.claude/skills/learn`. That worked when the repo was only `learn`. Now `learn` lives in `skills/learn/`, so a plain `git pull` in the old location leaves no `SKILL.md` at the top and the skill stops loading.
 
-Wrong answers are fine. What matters is you end up seeing why.
+Move the clone out, pull, and link the skill back:
 
-A concept entry in the notebook looks like this:
-
-```json
-"stats.clt": {
-  "understanding": "settling",
-  "notes": [
-    "clicked via the 'many small independent nudges' framing",
-    "still conflates convergence of the distribution with a sample path — try a simulation angle next"
-  ]
-}
+```bash
+mkdir -p ~/src
+mv ~/.claude/skills/learn ~/src/derwells-skills
+git -C ~/src/derwells-skills pull
+ln -s ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
 ```
 
-That's what the tutor reads back three weeks later. It tracks which explanations helped and can reuse a familiar example before changing it to test a new distinction. Missing evidence is recorded as `unassessed`; a demonstrated confusion is `shaky`.
+Use `~/.agents/skills/learn` instead if that's where you installed it. These commands also fix things if you already pulled and `learn` disappeared. Your courses aren't affected; they live in `.learning/` inside your projects, not in the skill folder.
 
-Existing courses keep their history and scope. On resumption, the tutor updates upcoming materials and retires inherited brevity limits or mandatory probe queues while preserving your explicit preferences.
+To stay on the old single-skill layout, check out the `learn-standalone` tag:
+
+```bash
+git -C ~/.claude/skills/learn fetch --tags
+git -C ~/.claude/skills/learn checkout learn-standalone
+```
+
+## Things to know
+
+- I write and test these on Linux with Claude Code and Codex. Other harnesses should work if they read `SKILL.md` folders, but I don't test them.
+- Some skills call paid services: `ai-image` (OpenAI or Gemini API keys), `claudex` (a Xiaomi MiMo plan) and `jev` (a TypeSafe API key). Each `SKILL.md` lists what it needs.
+- I change these as I use them. Pin a commit if you want them to hold still.
+- A few skills I use aren't here because they depend on my own accounts or private tooling: an email and calendar assistant, the skills that coordinate my agent sessions, and some work-specific ones.
+
+## Credits
+
+Sources the skills draw on are cited inside them. The main ones:
+
+- `learn` bases its teaching choices on Schwartz and Bransford's [A Time for Telling](https://www.wright.edu/sites/www.wright.edu/files/uploads/2017/Feb/event/Schwartz_Bransford_1998_TimeForTelling.pdf) and the IES practice guide [Organizing Instruction and Study to Improve Student Learning](https://ies.ed.gov/ncee/wwc/PracticeGuide/1).
+- `model-check` is built on Leslie Lamport's [TLA+](https://lamport.azurewebsites.net/tla/tla.html) and its model checker TLC, and its warning about textbook drift comes from the SysMoBench results.
+
+Skills by other people that I use, linked here so you get their current versions and their own licenses:
+
+- [humanizer](https://github.com/blader/humanizer) by Siqi Chen (MIT), based on Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) guide from WikiProject AI Cleanup.
+- [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) by Conor Bronsdon (MIT).
+- [make-film](https://github.com/clsandoval/make-film) by Carlos Sandoval (MIT).
+- [shadcn and migrate-radix-to-base](https://github.com/shadcn/ui/tree/main/skills) from the shadcn/ui project (MIT).
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
