@@ -47,6 +47,15 @@ for skill in skills:
         if not (skill / ref).is_file():
             errors.append(f"{rel}: SKILL.md points at missing file: {ref}")
 
+readme = (ROOT / "README.md").read_text()
+listed = set(re.findall(r"^\| \[([\w-]+)\]\(skills/\1\)", readme, re.M))
+present = {s.name for s in skills}
+if listed != present:
+    errors.append(f"README catalogue {sorted(listed)} does not match skills/ {sorted(present)}")
+for skill in skills:
+    if not (skill / "LICENSE").is_file():
+        errors.append(f"{skill.relative_to(ROOT)}: missing LICENSE, so copied folders lose the notice")
+
 for md in sorted(ROOT.rglob("*.md")):
     if ".git" in md.parts:
         continue

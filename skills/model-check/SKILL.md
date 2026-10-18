@@ -8,6 +8,7 @@ description: >
   expiry, state machines, or a protocol between processes or services; when a
   stress run or production shows a rare ordering failure; or when asked for a
   TLA+, formal or model-checked design.
+license: MIT
 ---
 
 # model-check
@@ -18,10 +19,12 @@ quickly; the expensive failures come from what goes into the model. A model
 that checks clean but is wrong about the code or the upstream service is worse
 than no model, because it reads as proof.
 
-The rule that made Boris Cherny's Lean and TLA+ work on the Claude Agent SDK
-(2026-09-22): every model was replayed against real executions, and when it
-rejected some real runs, it was rewritten until it accepted all of them (400
-of 400 for the engine model). Until then its results were provisional.
+So replay every model against real executions before trusting it. If it
+rejects some real runs, rewrite the model until it accepts them all, and treat
+its results as provisional until then. Boris Cherny's
+[post](https://x.com/bcherny/status/2102543349102338309) on using Lean and
+TLA+ with Claude to find bugs in the Claude Agent SDK is a good example of the
+approach.
 
 Skip it for pure functions (use tests or property-based tests), UI layout, and
 code with no interleaving, retry or time bound.
@@ -115,8 +118,9 @@ code with no interleaving, retry or time bound.
 - **State explosion fills disks.** One local TLC run wrote 16 GB of metadir.
   Cap it and delete it per run.
 - **Textbook drift.** LLM-written specs tend to model the paper or the
-  developer's belief (SysMoBench: Claude wrote the Raft paper's spec, not
-  etcd's). Citing `file:line` per transition is the countermeasure.
+  developer's belief (SysMoBench: asked for a spec of etcd's Raft, Claude
+  wrote the Raft paper's; [SIGOPS post](https://www.sigops.org/2026/can-llms-model-real-world-systems-in-tla/),
+  [paper](https://arxiv.org/abs/2509.23130)). Citing `file:line` per transition is the countermeasure.
 - **Bounded assumptions stay labelled.** "The service consumes or drops queued
   confirmations within two quiet cycles" came from observed logs, not a
   guarantee; say so wherever the clean result is reported.
