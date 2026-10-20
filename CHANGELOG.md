@@ -6,6 +6,10 @@ Release headings read `## <version> - <date>`. Versions are dates, `YYYY.MM.DD`,
 
 ## Unreleased
 
+### Changed
+
+- README opens with what the skills do instead of who wrote them; the title is now "Agent skills".
+
 ## 2026.10.20 - 2026-10-20
 
 ### Added
