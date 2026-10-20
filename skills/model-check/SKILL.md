@@ -1,13 +1,17 @@
 ---
 name: model-check
 description: >
-  Catch ordering and concurrency bugs by writing a small TLA+ model of the real
-  code, checking it with TLC, and replaying it against real executions before
-  trusting it. Use when a change touches queues, retries, approvals, locks or
-  leases, replay or reconnect, concurrency caps, rate limits, timeouts or
-  expiry, state machines, or a protocol between processes or services; when a
-  stress run or production shows a rare ordering failure; or when asked for a
-  TLA+, formal or model-checked design.
+  Find ordering and concurrency bugs that tests miss by writing a small TLA+
+  model of the real code, checking it with TLC, and replaying it against real
+  executions before trusting it. Use when there is a concrete, costly
+  interleaving question that focused tests can't settle: a rare ordering
+  failure seen in production or a stress run (duplicate work, a leaked slot or
+  lease, an action applied twice or never), or a new protocol between several
+  processes or services whose invariant is genuinely uncertain. Also use when
+  asked for TLA+, a formal model or a model check, or when changing code that
+  an existing formal model describes. Code that merely has a queue, retry,
+  timeout, approval or state machine is not enough: UI state, sorting, CRUD,
+  library retry wrappers and config changes get ordinary tests.
 license: MIT
 ---
 
@@ -26,8 +30,45 @@ its results as provisional until then. Boris Cherny's
 TLA+ with Claude to find bugs in the Claude Agent SDK is a good example of the
 approach.
 
-Skip it for pure functions (use tests or property-based tests), UI layout, and
-code with no interleaving, retry or time bound.
+## Decide first: model or tests
+
+Most changes near queues, retries, timeouts or state machines do not need a
+model. Answer three questions from the task and a quick read of the code,
+before creating any files:
+
+1. **Can things interleave?** Two or more actors (processes, async tasks,
+   workers, retries, timers, a remote service) act on the same state, and the
+   outcome depends on their order.
+2. **Is there a named, costly failure?** Say it in one sentence: a job runs
+   twice, a slot or lease leaks, an approval executes after it expired, a
+   message is lost. "It touches a queue" is not a failure.
+3. **Would focused tests leave it unsettled?** If you can name the bad
+   interleaving, force it in a test (fake clock, barrier, injected failure, a
+   property-based test over operation orders) and stop there. A model earns
+   its cost when there are too many orderings to list by hand, when a failure
+   seen in production or a stress run is still unexplained after reading the
+   code, or when a new protocol must hold an invariant across parties you
+   can't run together in a test.
+
+Build a model only if all three answers are yes, or if the user asked for one.
+Otherwise write one line, such as "No model: single writer, covered by a unit
+test of the timeout path", and carry on with normal tests. That line is all
+this skill produces for the task: no `formal/` directory, no TLC install.
+
+Normally tests, not a model: a loading or disabled state in a UI component, a
+stable sort, a CRUD endpoint, wrapping a call in a library retry or backoff
+helper, rate-limit middleware, a webhook handler that maps one event to one
+status, and config changes such as worker counts or timeouts.
+
+Worth a model: two workers occasionally process the same leased job under
+load; a per-tenant concurrency cap drifts upward after cancellations; an
+approval flow must run an approved action exactly once across expiry,
+reconnect and replay; a distributed lock or leader election is being
+designed.
+
+When a change touches code that an existing model describes (step 8), update
+the model and its expected results in the same change, even if the change
+alone would not justify a new model.
 
 ## Workflow
 
