@@ -1,0 +1,130 @@
+[
+ {
+  "tid": "T01",
+  "case": "n4",
+  "name": "fetch-backoff",
+  "expected": "tests",
+  "why": "Library-style retry helper with one caller; fake-clock unit tests.",
+  "prompt": "Our `api/client.ts` fetchWithRetry retries immediately 3 times. Change it to exponential backoff with jitter (200ms base, max 5s) and don't retry on 4xx."
+ },
+ {
+  "tid": "T02",
+  "case": "b1",
+  "name": "payment-idem",
+  "expected": "either",
+  "why": "Named failure with a standard fix (idempotency key); a fake-provider test forces it. No model expected, but not scored.",
+  "prompt": "Our payment provider sometimes times out on capture even though the charge went through, and our retry then double-charges. Add an idempotency key to the capture call and make the retry safe."
+ },
+ {
+  "tid": "T03",
+  "case": "n8",
+  "name": "flock-cron",
+  "expected": "tests",
+  "why": "Standard single-host mutual exclusion (flock).",
+  "prompt": "Our nightly backup.sh cron sometimes overlaps with the previous run when it's slow. Make sure only one runs at a time."
+ },
+ {
+  "tid": "T04",
+  "case": "p1",
+  "name": "chat-dupes",
+  "expected": "model",
+  "why": "Rare, unexplained duplicate across client resend, TTL dedupe and a server retry.",
+  "prompt": "Users report occasional duplicate chat messages, maybe 1 in a few thousand, mostly on flaky mobile networks. The client resends unacked messages after reconnect and the server dedupes by client message id in Redis with a 60s TTL, but there's also a server-side retry when fanout to other members fails. I've read the code and can't see how a duplicate gets through. Find it."
+ },
+ {
+  "tid": "T05",
+  "case": "p5",
+  "name": "formal-maint",
+  "expected": "model",
+  "why": "Change to code that an existing model describes; the model and expected results need updating.",
+  "prompt": "I'm changing `dispatcher/slots.py` so the slot is released before the final status write instead of after. The repo has `formal/dispatch/` with a TLA+ model and `formal/expected.tsv` covering this code. Make the change."
+ },
+ {
+  "tid": "T06",
+  "case": "p3",
+  "name": "explicit-tla",
+  "expected": "model",
+  "why": "Explicit request for TLA+ and TLC.",
+  "prompt": "Write a TLA+ spec for the replica promotion logic in `cluster/promote.go` and check it with TLC. I want to know if two replicas can both think they're primary."
+ },
+ {
+  "tid": "T07",
+  "case": "n5",
+  "name": "gunicorn-timeout",
+  "expected": "tests",
+  "why": "Config change to two timeouts.",
+  "prompt": "Report exports time out after 30s in prod. Bump the gunicorn worker timeout to 120s and the nginx proxy_read_timeout to match; configs are in deploy/."
+ },
+ {
+  "tid": "T08",
+  "case": "n6",
+  "name": "leaderboard-sort",
+  "expected": "tests",
+  "why": "Deterministic sort tiebreak.",
+  "prompt": "The leaderboard API returns players in a different order each refresh when scores tie. Sort by score desc, then by joined_at asc, and add a test."
+ },
+ {
+  "tid": "T09",
+  "case": "p4",
+  "name": "refund-double",
+  "expected": "model",
+  "why": "Recurring production double count between two concurrent writers that does not reproduce locally.",
+  "prompt": "Three times this quarter the month-end revenue report counted a refund twice. The refund API and the nightly settlement batch both update ledger rows; the batch reads in chunks and the API uses optimistic locking with a version column. We couldn't reproduce it locally."
+ },
+ {
+  "tid": "T10",
+  "case": "n9",
+  "name": "search-debounce",
+  "expected": "tests",
+  "why": "UI debounce and request cancellation; fake-timer test.",
+  "prompt": "Debounce the search box in SearchBar.vue by 300ms and cancel the in-flight request when a new one starts so results don't flicker."
+ },
+ {
+  "tid": "T11",
+  "case": "n2",
+  "name": "order-status-enum",
+  "expected": "tests",
+  "why": "One new guarded transition in a single-writer state machine; transition-table tests.",
+  "prompt": "Add an `archived` status to the Order model (`models/order.py`). It should be reachable only from `delivered` or `cancelled`, and the admin page should get an Archive button. Update the transition table and tests."
+ },
+ {
+  "tid": "T12",
+  "case": "n1",
+  "name": "toast-queue",
+  "expected": "tests",
+  "why": "Single-threaded UI queue; a hook test with fake timers covers it.",
+  "prompt": "In our Next.js app, toasts stack on top of each other when several fire at once. Add a simple queue in `hooks/useToast.ts` so only one toast shows at a time and the next one appears when the current one is dismissed or after 4 seconds."
+ },
+ {
+  "tid": "T13",
+  "case": "b2",
+  "name": "pg-queue",
+  "expected": "either",
+  "why": "Standard SKIP LOCKED plus lease pattern; a model is defensible only for a custom lease protocol. Not scored.",
+  "prompt": "Build a Postgres-backed job queue for our app: multiple worker processes, jobs must not be lost if a worker crashes, and no job should run twice at the same time."
+ },
+ {
+  "tid": "T14",
+  "case": "n7",
+  "name": "sidekiq-retries",
+  "expected": "tests",
+  "why": "Library retry setting plus an exhausted-retries hook.",
+  "prompt": "Sidekiq retries failed jobs 25 times by default. For EmailDigestJob cap it at 5 retries and post an alert to Slack when a job lands in the dead set."
+ },
+ {
+  "tid": "T15",
+  "case": "n3",
+  "name": "expense-approve",
+  "expected": "tests",
+  "why": "CRUD plus a permission check; API tests.",
+  "prompt": "Add an Approve button to the expense detail page. Clicking it should set status to approved, store approver_id and approved_at, and only users with the manager role should see it. Backend is Django REST framework."
+ },
+ {
+  "tid": "T16",
+  "case": "p2",
+  "name": "doc-lock-handoff",
+  "expected": "model",
+  "why": "New multi-party lease/revoke/replay protocol with an invariant the user wants checked before building.",
+  "prompt": "We're designing edit-lock handoff between our editor service and the sync service: offline clients can hold a lease, the sync service can revoke it, and a reconnecting client may replay buffered edits. The invariant is that two clients never have accepted writes for the same doc in the same epoch. Before we build it, I want confidence the protocol actually holds that."
+ }
+]
