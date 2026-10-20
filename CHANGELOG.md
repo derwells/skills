@@ -6,6 +6,8 @@ Release headings read `## <version> - <date>`. Versions are dates, `YYYY.MM.DD`,
 
 ## Unreleased
 
+## 2026.10.20 - 2026-10-20
+
 ### Added
 
 - Repository docs: install, update and pinning instructions for Claude Code and Codex, [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), issue and pull request templates, and [docs/releasing.md](docs/releasing.md). The long migration section for old `learn` clones moved to [docs/migrating-from-learn-skill.md](docs/migrating-from-learn-skill.md).
