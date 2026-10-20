@@ -1,8 +1,6 @@
-# Derick Wells' skills
+# Agent skills
 
-These are the agent skills I wrote for my own work with Claude Code and Codex. Each one is a folder with a `SKILL.md` that tells the agent when to use it and how. They follow the [Agent Skills](https://agentskills.io) format, so other harnesses that read that format should pick them up too.
-
-This repo started as just the `learn` skill. It now holds a few more that I've made general enough to share. Take whichever are useful to you.
+Skills for coding agents: running a course of study (`learn`), getting past logins and consent screens (`access`), driving web pages (`browser`), and checking concurrency designs with a model checker (`model-check`). Each one is a folder with a `SKILL.md` in the [Agent Skills](https://agentskills.io) format. They are tested with Claude Code and Codex on Linux, and other harnesses that read `SKILL.md` folders should load them too. Install the ones you need.
 
 ## What's here
 
@@ -108,4 +106,4 @@ Sources the skills draw on are cited inside them. The main ones:
 
 ## License
 
-MIT. See [LICENSE](LICENSE); each skill folder carries the same notice.
+MIT, copyright Derick Wells. See [LICENSE](LICENSE); each skill folder carries the same notice.
