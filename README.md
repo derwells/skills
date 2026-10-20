@@ -6,70 +6,97 @@ This repo started as just the `learn` skill. It now holds a few more that I've m
 
 ## What's here
 
-| Skill | What it does | How it starts |
-|---|---|---|
-| [learn](skills/learn) | Runs a long course of study: researches a curriculum, leads short lessons, keeps notes on what you understand. | `/learn`, or asking for a lesson |
-| [access](skills/access) | Gets an agent past logins, consent screens and dashboards with no API. Tries an official API or CLI first, then a saved browser script, then exploring the page, and asks you only for MFA, CAPTCHA or a locked vault. Fills passwords from your password manager without showing them to the model. | A task behind a login |
-| [browser](skills/browser) | Drives web pages: explores with agent-browser, saves flows that work as Playwright scripts, and keeps test browsers separate from anything real. Pairs with `access`. | Before an agent drives a web page |
-| [model-check](skills/model-check) | Writes a small TLA+ model of real code, checks it with TLC, and replays it against real runs before trusting it. For queues, retries, locks, timeouts and similar ordering bugs. | Changes to concurrency or protocol code, or asking for a model check |
+| Skill | Use it for | How it starts | Needs |
+|---|---|---|---|
+| [learn](skills/learn) | A long course of study: researches a curriculum, leads short lessons, keeps notes on what you understand. | `/learn`, or asking for a lesson | Web search and file write access. `jq` or `python3` to validate notes; Jupyter via `uv` for notebook lessons. |
+| [access](skills/access) | Getting an agent past logins, consent screens and dashboards with no API. Tries an official API or CLI first, then a saved browser script, then exploring the page, and asks you only for MFA, CAPTCHA or a locked vault. | A task behind a login | Shell access. For browser steps, the `browser` skill's tools. For password fills, a password manager CLI you have already unlocked, such as Bitwarden's `bw`. |
+| [browser](skills/browser) | Driving web pages: explores with agent-browser, saves flows that work as Playwright scripts, and keeps test browsers separate from anything real. Pairs with `access`. | Before an agent drives a web page | [agent-browser](https://github.com/vercel-labs/agent-browser), Python [Playwright](https://playwright.dev/python/) and a local Chromium. The optional Jev step also needs your own runner and a TypeSafe API key. |
+| [model-check](skills/model-check) | Writes a small TLA+ model of real code, checks it with TLC, and replays it against real runs. For a concrete ordering or concurrency bug that focused tests can't settle, or when you ask for a model check. | A rare ordering failure, an uncertain multi-service protocol, or asking for TLA+ | Java 17+ and `tla2tools.jar`. |
 
 ## Install
 
-Clone the repo once, then link the skills you want into your harness's skills folder.
+Clone the repo once, then link the skills you want into your harness's skills folder. The blocks below are the same commands `tests/test_install.py` runs in CI, against a temporary home directory.
 
+<!-- install:clone -->
 ```bash
 git clone https://github.com/derwells/skills ~/src/derwells-skills
-
-# Claude Code (opencode reads this path too)
-mkdir -p ~/.claude/skills
-ln -s ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
-
-# Codex and others
-mkdir -p ~/.agents/skills
-ln -s ~/src/derwells-skills/skills/learn ~/.agents/skills/learn
 ```
 
-Swap `learn` for any other skill name. To update, pull:
+Claude Code (opencode reads this path too):
 
+<!-- install:claude -->
 ```bash
-git -C ~/src/derwells-skills pull
+mkdir -p ~/.claude/skills
+for skill in learn access browser model-check; do
+  ln -sfn ~/src/derwells-skills/skills/$skill ~/.claude/skills/$skill
+done
 ```
 
-If you'd rather not keep a clone, copy a whole folder from `skills/` into your skills directory instead. Each folder has its own `LICENSE`, so keep it with the copy. You'll have to copy the folder again to get changes.
+Codex and other harnesses that read `~/.agents/skills`:
+
+<!-- install:codex -->
+```bash
+mkdir -p ~/.agents/skills
+for skill in learn access browser model-check; do
+  ln -sfn ~/src/derwells-skills/skills/$skill ~/.agents/skills/$skill
+done
+```
+
+Drop any name from the loop that you don't want. Start a new session afterwards so the harness rescans its skills folder.
+
+If you'd rather not keep a clone, copy a skill folder instead. Each folder has its own `LICENSE`, so keep it with the copy. You'll have to copy again to get changes.
+
+<!-- install:copy -->
+```bash
+mkdir -p ~/.claude/skills
+cp -R ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
+```
+
+### As a Claude Code plugin
+
+The repo also has a plugin marketplace manifest (`.claude-plugin/marketplace.json`) that offers all four skills as one plugin:
+
+```text
+/plugin marketplace add derwells/skills
+/plugin install derwells-skills@derwells-skills
+```
+
+I checked this with `claude plugin validate` and an install from a local checkout using Claude Code 2.1.304. Claude Code namespaces plugin skills with the plugin name, so they appear as `derwells-skills:learn` and so on. The symlink install above keeps the short names.
 
 ### If you installed learn before the move
 
-This repo used to be called `learn-skill`. GitHub redirects the old URL, so existing clones still pull, but you can point yours at the new name:
+`learn` used to live alone in `learn-skill`, cloned straight into the skills folder. If your copy stopped loading after a pull, follow [the migration steps](docs/migrating-from-learn-skill.md).
 
+## Using a skill
+
+A skill starts one of two ways. The agent reads each skill's `description` and loads the skill when your task matches it. Or you name it: `/learn` in Claude Code, `$learn` in Codex. The "How it starts" column above says what to expect for each one.
+
+A skill's instructions only load when it starts, so an idle skill adds only its short description to the session.
+
+## Updating and pinning
+
+With a clone, pull to get changes:
+
+<!-- install:update -->
 ```bash
-git -C <your clone> remote set-url origin https://github.com/derwells/skills
-```
-
-The old instructions cloned this whole repo straight into `~/.claude/skills/learn`. That worked when the repo was only `learn`. Now `learn` lives in `skills/learn/`, so a plain `git pull` in the old location leaves no `SKILL.md` at the top and the skill stops loading.
-
-Move the clone out, pull, and link the skill back:
-
-```bash
-mkdir -p ~/src
-mv ~/.claude/skills/learn ~/src/derwells-skills
 git -C ~/src/derwells-skills pull
-ln -s ~/src/derwells-skills/skills/learn ~/.claude/skills/learn
 ```
 
-Use `~/.agents/skills/learn` instead if that's where you installed it. These commands also fix things if you already pulled and `learn` disappeared. Your courses aren't affected; they live in `.learning/` inside your projects, not in the skill folder.
-
-To stay on the old single-skill layout, check out the `learn-standalone` tag:
+To hold still at a release, check out a tag instead (tags are listed on the [releases page](https://github.com/derwells/skills/releases) once I cut one; see [docs/releasing.md](docs/releasing.md) for how):
 
 ```bash
-git -C ~/.claude/skills/learn fetch --tags
-git -C ~/.claude/skills/learn checkout learn-standalone
+git -C ~/src/derwells-skills fetch --tags
+git -C ~/src/derwells-skills checkout <tag>
 ```
 
-## Things to know
+Without a tag, pin a commit hash the same way. Run `git checkout main` and pull to follow the latest again. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
-- I write and test these on Linux with Claude Code and Codex. Other harnesses should work if they read `SKILL.md` folders, but I don't test them.
-- `access` and `browser` need [agent-browser](https://github.com/vercel-labs/agent-browser) and Python [Playwright](https://playwright.dev/python/). Password fills need a password manager CLI you've unlocked yourself, such as Bitwarden's `bw`. `model-check` needs Java 17+ and `tla2tools.jar`.
-- I change these as I use them. Pin a commit if you want them to hold still.
+## Scope and limits
+
+- I write and test these on Linux with Claude Code and Codex. Other harnesses should work if they read `SKILL.md` folders, but I haven't tested them. macOS and Windows are untested.
+- CI checks structure, not behavior: the frontmatter, links, bundled files, license notices, that no private paths or secrets slipped in, that the install commands above work, and that the browser benchmark tables recompute. It cannot tell you whether a skill makes an agent do the right thing. [`skills/browser/benchmarks`](skills/browser/benchmarks/README.md) holds the one set of measurements I have, on a synthetic site.
+- Skills steer an agent that can run commands and drive a browser. Read a skill before you install it, the same as any script you let an agent follow. [SECURITY.md](SECURITY.md) says how to report a problem.
+- I change these as I use them, and this is a personal collection. Issues and small pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). I make no promise about response time.
 
 ## Credits
 

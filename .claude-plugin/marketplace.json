@@ -1,0 +1,16 @@
+{
+  "name": "derwells-skills",
+  "description": "Agent skills by Derick Wells: learn, access, browser, model-check.",
+  "owner": {
+    "name": "Derick Wells"
+  },
+  "plugins": [
+    {
+      "name": "derwells-skills",
+      "source": "./",
+      "description": "Skills for long-form study (learn), logins and consent screens (access), browser driving (browser), and TLA+ model checking (model-check).",
+      "license": "MIT",
+      "strict": false
+    }
+  ]
+}
