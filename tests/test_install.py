@@ -2,7 +2,9 @@
 
 The commands come from fenced blocks in README.md that are preceded by an HTML
 comment such as `<!-- install:clone -->`, so the README cannot drift from this
-test. The clone URL is rewritten to the local checkout. Then every skill in
+test. The clone URL is rewritten to a snapshot of the working tree, committed
+on a `main` branch, so the test covers uncommitted files and works from a
+detached checkout such as a CI pull request merge. Then every skill in
 skills/ must resolve to a directory with a SKILL.md for both Claude Code and
 Codex, and the copy alternative must keep SKILL.md and LICENSE.
 
@@ -47,6 +49,34 @@ def run_script(script, home, repo):
         raise AssertionError(f"install block failed:\n{local}\n{result.stdout}{result.stderr}")
 
 
+GIT_ENV = {
+    "GIT_CONFIG_GLOBAL": os.devnull,
+    "GIT_CONFIG_SYSTEM": os.devnull,
+    "GIT_AUTHOR_NAME": "install-test",
+    "GIT_AUTHOR_EMAIL": "install-test@example.com",
+    "GIT_COMMITTER_NAME": "install-test",
+    "GIT_COMMITTER_EMAIL": "install-test@example.com",
+}
+
+
+def snapshot_repo(repo, dest):
+    """Copy the files git would track into dest and commit them on main."""
+    listed = subprocess.run(
+        ["git", "-C", str(repo), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+        capture_output=True, check=True,
+    ).stdout.decode().split("\0")
+    for name in filter(None, listed):
+        source = repo / name
+        if source.is_file():
+            target = dest / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
+    env = {**os.environ, **GIT_ENV}
+    for cmd in (["init", "-q", "-b", "main"], ["add", "-A"], ["commit", "-q", "-m", "snapshot"]):
+        subprocess.run(["git", "-C", str(dest), *cmd], env=env, check=True, capture_output=True)
+    return dest
+
+
 def skill_names(repo):
     return sorted(p.parent.name for p in repo.glob("skills/*/SKILL.md"))
 
@@ -63,11 +93,14 @@ def check_install(repo, readme_text):
     errors = []
     names = skill_names(repo)
     with tempfile.TemporaryDirectory() as tmp:
+        source = pathlib.Path(tmp) / "source"
+        source.mkdir()
+        snapshot_repo(repo, source)
         home = pathlib.Path(tmp) / "home"
         home.mkdir()
         try:
             for name in ("clone", "claude", "codex", "update"):
-                run_script(blocks[name], home, repo)
+                run_script(blocks[name], home, source)
         except AssertionError as exc:
             return [str(exc)]
         for harness, rel in SKILLS_DIRS.items():
@@ -79,8 +112,8 @@ def check_install(repo, readme_text):
         copy_home = pathlib.Path(tmp) / "copy-home"
         copy_home.mkdir()
         try:
-            run_script(blocks["clone"], copy_home, repo)
-            run_script(blocks["copy"], copy_home, repo)
+            run_script(blocks["clone"], copy_home, source)
+            run_script(blocks["copy"], copy_home, source)
         except AssertionError as exc:
             return errors + [str(exc)]
         copied = [p for p in (copy_home / ".claude/skills").iterdir() if p.is_dir() and not p.is_symlink()]
