@@ -1,11 +1,27 @@
 name: validate
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - run: pip install pyyaml
-      - name: Check every SKILL.md against the Agent Skills spec
+      - name: Validate skills, links, hygiene, changelog and plugin manifest
         run: python3 scripts/validate.py
+      - name: Unit tests and README install test
+        run: python3 -m unittest discover -s tests -v
+      - name: Recompute browser benchmark tables
+        run: python3 skills/browser/benchmarks/reproduce.py
+      - name: Recompute model-check routing eval tables
+        run: python3 skills/model-check/evals/score.py
