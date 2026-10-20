@@ -37,7 +37,7 @@ The before skill is `SKILL.md` at commit `88b7b49`. The after skill is the one i
 
 "Modelled" counts `yes` and `conditional`. With the old trigger, the agent loaded the skill for seven of the nine ordinary tasks and then talked itself out of a model each time. That cost a skill load and a decision per task, and it is the over-application the change targets. After the change none of them loaded, and all five model cases still loaded and planned the same checks: constants cited from code, counterexamples turned into real tests, replay against real runs, bounded claims and a deliberately broken config. The one exception was the existing-model case, which skipped replay and bounded claims because it was only updating a model.
 
-Under forced load, both versions rejected the six ordinary tasks in one or two minutes. The old body also chose a model for the payment retry, a case with a standard fix that a fake-provider test can force. The new body chose tests. Both chose a model for the Postgres queue.
+Under forced load, both versions rejected the six ordinary tasks. The judges estimated one or two minutes for each decision; that is their guess, not a measured time. The old body also chose a model for the payment retry, a case with a standard fix that a fake-provider test can force. The new body chose tests. Both chose a model for the Postgres queue.
 
 Recompute the table from the raw answers in [`results/`](results):
 
@@ -45,7 +45,7 @@ Recompute the table from the raw answers in [`results/`](results):
 python3 score.py
 ```
 
-It exits 1 if the numbers no longer match this README.
+It exits 1 if the recomputed table differs from the one above.
 
 ## Limits
 
