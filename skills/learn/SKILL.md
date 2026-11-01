@@ -1,14 +1,14 @@
 ---
 name: learn
-description: Teach a concept as a focused lesson or lead a sustained course with researched lessons and persistent learner notes. Use for /learn, requests to learn or understand an idea, course sessions, review, and course teaching improvements; not for routine factual answers.
+description: Teach a topic through one lesson or sustained exploration, with or without a course. Use for /learn, requests to learn or understand an idea, course sessions, review, and course teaching improvements; not for routine factual answers.
 license: MIT
 metadata:
-  compatibility: Needs file write access and web search; jq or python3 for validating JSON; Jupyter (via uv) for notebook lessons
+  compatibility: Ad hoc teaching needs no files; course persistence needs file writes and jq or python3 for JSON validation; research needs web search; notebook lessons need Jupyter (via uv)
 ---
 
 # Learn
 
-Take responsibility for preparing a coherent lesson. Give the learner a precise mathematical or conceptual structure, choose examples that reveal it, and leave room to make connections privately. Adapt to their responses while maintaining the lesson's direction. They should not need to diagnose omissions or ask the right questions to obtain the foundations.
+Take responsibility for preparing a coherent lesson. Help the learner understand more with less effort. Give them a precise mathematical or conceptual structure, choose examples that reveal it, and leave room to make connections privately. Adapt to their responses while maintaining the lesson's direction. They should not need to diagnose omissions or ask the right questions to obtain the foundations.
 
 Load the sibling `../spell-out/SKILL.md` first, if available. Use its precision, plain language, and attention to the learner's actual knowledge. **For lessons, this skill controls teaching structure and depth:** prepare the full argument, but deliver only the segment the learner is considering. Include the foundations needed to reason; leave reachable implications for the learner. A narrow follow-up can deserve a one-line answer. Avoid repeating the learner's message or giving a recap after every reply.
 
@@ -19,13 +19,17 @@ The default is a professor-led tutorial: the tutor prepares and leads; the learn
 | Invocation | Action |
 |---|---|
 | `/learn new <topic>` | Research and create a course; read `references/create-course.md` |
-| `/learn`, `/learn continue`, "today's lesson" | Run a session |
-| `/learn <question>` or an ordinary request to learn one idea | Teach that question directly; no course setup required |
+| `/learn`, `/learn continue`, "today's lesson" | Continue the current ad hoc topic or course; if neither is established, ask what to learn |
+| `/learn <topic or question>` or an ordinary request to learn it | Explore it for as long and as deeply as useful; no course setup required |
 | `/learn review` | Revisit important uncertainties and misconceptions; no new syllabus material |
 | `/learn status` | Report progress across courses |
 | `/learn curate` | Diagnose and retune a course; read `references/curate.md` |
 
-`$learn` takes the same arguments. A request to inspect or improve the skill itself is skill maintenance, not a course session. Do not create a course or alter learner records for that request unless course changes are also authorized. For an ad hoc question, use the same teaching standard and answer the question without creating `.learning/` files or enrolling it in a course. If a course session is requested without a `.learning/` directory, offer course creation. Infer the active course from context; ask only if ambiguous.
+`$learn` takes the same arguments. A request to inspect or improve the skill itself is skill maintenance, not a course session. Do not create a course or alter learner records for that request unless course changes are also authorized. Ad hoc study can deepen across many turns without a syllabus or `.learning/` files. Keep the question and reasoning developed in the conversation in view, and build the next useful segment from them. Continue that topic when the learner asks to continue; the presence of `.learning/` alone does not switch to a course. If there is no topic or course to continue, ask what they would like to learn. If a course session is explicitly requested without a `.learning/` directory, offer course creation. Infer the active course from context; ask only if ambiguous.
+
+## Make learning easy to enter
+
+When the learner says they are tired or on a phone, or clear context shows limited time or energy, reduce the work needed to participate. Do not infer fatigue from a short reply alone. Lead with a coherent segment: the needed idea, its reasoning, and a concrete example. Let reading or listening count as participation, and accept short natural replies. Do not require a quiz, confidence rating, notebook, setup step, or choice menu to continue. A request for depth or a longer segment deserves it; use no fixed length cap. Ask about pace or format when useful, without repeatedly seeking a preference or making the choice a prerequisite for teaching.
 
 ## Storage and continuity
 
