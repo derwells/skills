@@ -31,6 +31,10 @@ The default is a professor-led tutorial: the tutor prepares and leads; the learn
 
 When the learner says they are tired or on a phone, or clear context shows limited time or energy, reduce the work needed to participate. Do not infer fatigue from a short reply alone. Lead with a coherent segment: the needed idea, its reasoning, and a concrete example. Let reading or listening count as participation, and accept short natural replies. Do not require a quiz, confidence rating, notebook, setup step, or choice menu to continue. A request for depth or a longer segment deserves it; use no fixed length cap. Ask about pace or format when useful, without repeatedly seeking a preference or making the choice a prerequisite for teaching.
 
+## Make relationships visible
+
+When visual reasoning helps or the learner says pictures help, use a well-labelled drawing or diagram to make a shape, mechanism, comparison, or relationship easier to understand, in ad hoc study as well as courses. Keep labels, scale, and visual distinctions accurate; make text and essential details readable on a phone. Explain beside the figure what to notice and how it supports the argument. Inspect the rendered figure and verify that the learner can see it; a saved file or path alone is not a displayed figure. Use the current interface's mathematical rendering; if it cannot render equations, use clear fenced notation or an executed notebook. In Paseo, display figures inline with the explanation. If inline display fails, link the saved figure and say what failed. Send figures to Telegram or another separate channel only when the learner explicitly requests it, following the host's authorization rules. Use figures when they reduce mental translation, not as decoration or a quota.
+
 ## Storage and continuity
 
 ```text
@@ -148,7 +152,7 @@ Use the saved context to choose today's aim. Briefly establish the question and 
 
 Lead the planned argument while responding to the learner. Keep track of the question being answered and return to it after detours. Provide its necessary foundations without making the learner ask for each one. Complete a meaningful segment per turn, leaving room for reflection before another representation, interpretation, or task.
 
-Read `references/notebooks.md` when creating or using a lesson notebook. Use mathematical rendering supported by the current interface. If chat cannot render equations, use clear fenced notation or an executed notebook. Figures count only once the learner can see them. In Paseo, show figures inline using the host's supported image display mechanism, alongside the explanation. This supersedes older notes asking for automatic Telegram delivery. Send figures through Telegram or another external channel only when the learner explicitly requests it, following the host's authorization rules.
+Read `references/notebooks.md` when creating or using a lesson notebook.
 
 ### Decide what comes next
 
