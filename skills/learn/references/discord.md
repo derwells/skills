@@ -6,6 +6,8 @@ Discord controls are optional. When the learner says they are on a phone or tire
 
 If controls are unavailable, ask the question in plain text. Accept a natural free-text answer and, when useful, a confidence self-report in the learner's own words. Continue teaching from those responses; neither controls nor a course are required.
 
+When a drawing helps, explain what to inspect beside it and, when available, send it through a supported attachment path. `fleet reply --file` needs a verified caller identity. Check the posted message to see whether the image rendered when feasible; a local file alone does not prove delivery. If the image cannot be shown or its display cannot be verified, say so, give a verified link to the saved figure when available, and explain the essential relationship in text. Do not make the learner confirm display before continuing. Keep labels and details readable on a phone; do not send the figure through Telegram unless asked.
+
 To post a choice in the current lead effort thread, write the question and a JSON array of two to four option strings to files, then run:
 
 ```text
