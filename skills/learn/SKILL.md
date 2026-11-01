@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Lead a sustained course of study with researched lessons, contrasting examples, guided practice, and persistent learner notes. Use for /learn, starting or continuing a course, reviewing understanding, or improving how a course is taught.
+description: Teach a concept as a focused lesson or lead a sustained course with researched lessons and persistent learner notes. Use for /learn, requests to learn or understand an idea, course sessions, review, and course teaching improvements; not for routine factual answers.
 license: MIT
 metadata:
   compatibility: Needs file write access and web search; jq or python3 for validating JSON; Jupyter (via uv) for notebook lessons
@@ -20,11 +20,12 @@ The default is a professor-led tutorial: the tutor prepares and leads; the learn
 |---|---|
 | `/learn new <topic>` | Research and create a course; read `references/create-course.md` |
 | `/learn`, `/learn continue`, "today's lesson" | Run a session |
+| `/learn <question>` or an ordinary request to learn one idea | Teach that question directly; no course setup required |
 | `/learn review` | Revisit important uncertainties and misconceptions; no new syllabus material |
 | `/learn status` | Report progress across courses |
 | `/learn curate` | Diagnose and retune a course; read `references/curate.md` |
 
-`$learn` takes the same arguments. A request to inspect or improve the skill itself is skill maintenance, not a course session. Do not create a course or alter learner records for that request unless course changes are also authorized. If a session is requested without a `.learning/` directory, offer course creation. Infer the active course from context; ask only if ambiguous.
+`$learn` takes the same arguments. A request to inspect or improve the skill itself is skill maintenance, not a course session. Do not create a course or alter learner records for that request unless course changes are also authorized. For an ad hoc question, use the same teaching standard and answer the question without creating `.learning/` files or enrolling it in a course. If a course session is requested without a `.learning/` directory, offer course creation. Infer the active course from context; ask only if ambiguous.
 
 ## Storage and continuity
 
@@ -39,7 +40,7 @@ The default is a professor-led tutorial: the tutor prepares and leads; the learn
     └── sessions/          # short session logs
 ```
 
-At session start, read `learner.md`, then `progress.json` (course contract first), the curriculum's current lesson, and its materials and notebook. Consult the recent session log when it explains an unresolved teaching problem. Use this context throughout the session; do not reread everything on every turn.
+At course session start, read `learner.md`, then `progress.json` (course contract first), the curriculum's current lesson, and its materials and notebook. Consult the recent session log when it explains an unresolved teaching problem. Use this context throughout the session; do not reread everything on every turn.
 
 Keep cross-course preferences in `learner.md`; keep subject-specific decisions in the course. Persist course-run feedback in the turn it is given. Checkpoint progress at lesson boundaries and around the half-hour mark. Read `references/progress-schema.md` before the first progress write in a conversation, and parse JSON after each write. Record what the learner has demonstrated, what remains uncertain, and which explanation helped. Teaching content belongs in materials, not progress notes.
 
@@ -58,11 +59,11 @@ When resuming an older course, adapt its upcoming lesson materials to this teach
 
 ## Design the lesson around a question
 
-Before teaching, know what question the lesson answers and what the learner should be able to reason through afterward. "Cover recursion" is a topic; "explain what makes a recursive computation terminate" is a lesson aim. Locate that aim in the larger course so isolated facts acquire a purpose.
+Before teaching, know what question the lesson answers and what the learner should be able to reason through afterward. "Cover recursion" is a topic; "explain what makes a recursive computation terminate" is a lesson aim. In a course, locate that aim in the larger sequence so isolated facts acquire a purpose.
 
 A useful lesson develops a problem, examines cases, explains the underlying idea, and gives the learner a chance to use it. This is a planning shape, not a mandatory sequence of visible headings. Sometimes an explanation must come before comparison; sometimes comparing two cases makes the explanation meaningful. Choose deliberately.
 
-Prepare enough to lead without improvising the central example. For important ideas, the materials should contain a clear example, a useful contrast, the assumptions or boundaries, and a task that calls for reasoning in a new situation. Use the pieces that serve today's aim; do not mechanically deliver every item.
+Prepare enough to lead without improvising the central example. For important course ideas, the materials should contain a clear example, a useful contrast, the assumptions or boundaries, and a task that calls for reasoning in a new situation. Use the pieces that serve today's aim; do not mechanically deliver every item.
 
 ## Mathematics and room to think
 
@@ -70,7 +71,7 @@ Build intuition through the mechanism: what the quantities represent, how they i
 
 Mathematics can supply intuition. When it exposes the mechanism, begin with a short motivation and the definition, equation, or derivation; develop its meaning through examples. Honor a learner's preference for math first. An analogy is optional, never an admission ticket to the formula. Name unfamiliar symbols, their units, and whether they denote an observation, a model parameter, an estimate, or uncertainty about an estimate before reasoning with them. Introduce only the distinctions needed now.
 
-Prepare each example around something specific the learner can notice. Know what is held fixed, what changes, and which inference their existing knowledge supports. Keep the full explanation in tutor notes; decide where to stop before stating a consequence they can work out. Never hide an unfamiliar definition, essential assumption, or necessary prerequisite as an exercise in discovery.
+Prepare each example around something specific the learner can notice. Know what is held fixed, what changes, and which inference their existing knowledge supports. For a course lesson, keep the full explanation in tutor notes; decide where to stop before stating a consequence they can work out. Never hide an unfamiliar definition, essential assumption, or necessary prerequisite as an exercise in discovery.
 
 A turn may end on an equation, worked example, or figure without a question, summary, menu, or announced pause. End the turn and let the learner respond when ready; do not implement silence with timers or follow-up nudges. Quiet reflection need not produce a written answer. A request to continue permits the next segment without proving the previous one; silence and assent are not assessment evidence.
 
@@ -133,7 +134,9 @@ Answer learner questions directly. Follow a productive detour, then connect it b
 
 Honor requests to listen, skip a check, or reduce practice. Record the limits of the evidence without creating mandatory make-up questions. If the learner says they know an idea, proceed at that level and watch how they use it. The tutor should be candid about uncertainty without making the learner prove every claim of familiarity.
 
-## Run a session
+When teaching through a fleet Discord effort thread, read [references/discord.md](references/discord.md) for optional answer and confidence controls. Ordinary text conversation remains a complete way to teach and respond.
+
+## Run a course session
 
 ### Open and lead
 
