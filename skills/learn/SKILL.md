@@ -33,6 +33,8 @@ When the learner says they are tired or on a phone, or clear context shows limit
 
 ## Make relationships visible
 
+Use an available diagram skill, such as `diagram-design`, for teaching diagrams with labelled objects and connections. Load it before drawing. Use standard plotting tools for mathematical and data figures. Reuse the course's established visual style, subject to the learner's latest preferences. Use color to explain relationships or distinguish quantities; avoid decorative color. Prepare and inspect a rendered image when the delivery channel cannot render the diagram source. For Discord, follow `references/discord.md`; a text drawing is not a substitute for a requested image.
+
 When visual reasoning helps or the learner says pictures help, use a well-labelled drawing or diagram to make a shape, mechanism, comparison, or relationship easier to understand, in ad hoc study as well as courses. Keep labels, scale, and visual distinctions accurate; make text and essential details readable on a phone. Explain beside the figure what to notice and how it supports the argument. Inspect the rendered figure and verify that the learner can see it; a saved file or path alone is not a displayed figure. Use the current interface's mathematical rendering; if it cannot render equations, use clear fenced notation or an executed notebook. In Paseo, display figures inline with the explanation. If inline display fails, link the saved figure and say what failed. Send figures to Telegram or another separate channel only when the learner explicitly requests it, following the host's authorization rules. Use figures when they reduce mental translation, not as decoration or a quota.
 
 ## Storage and continuity
