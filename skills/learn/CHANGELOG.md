@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Prepare more frequent optional learning checks, with plausible choices and feedback adapted to the response.
+- Add combined Discord answer and confidence controls with explicit submission, while preserving existing prompts and course records.
+- Distinguish recognition, explanation, and independent application; exclude synthetic interactions from learner evidence.
 - Moved to `skills/learn/` when the repository became a collection of skills. Existing clones need the migration steps in the top-level README. The `learn-standalone` tag keeps the old single-skill layout.
 - Rebuilt teaching around professor-led lessons with a central question, developed reasoning, contrasts, and guided application.
 - Removed the fixed explanation length, mandatory stops, delayed-question rules, and automatic probe backlog.
