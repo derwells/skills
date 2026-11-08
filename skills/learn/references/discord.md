@@ -19,6 +19,8 @@ fleet reply <unit-id> --text-file <reply-file> --file <diagram.png>
 ## Answer and optional confidence
 
 Prepare the question under [lesson-craft.md](lesson-craft.md). Hold one check open at a time.
+Send the explanation before creating the check, or include it in the question file.
+Unclassified tutor messages after creation make later confidence timing unknown.
 Write the question and a JSON array of two to four option strings to files.
 Post the check in the current lead effort thread:
 
@@ -86,6 +88,7 @@ fleet learn retire <prompt-id>
 
 The command returns pending context for combined prompts. Preserve that context without a grade and explain the closure.
 A resumed tutor can reuse the wording in a fresh prompt. Old selections cannot become new attempts.
+The current lead can read older prompt state in the same effort. Changes still require the original session.
 Session, lead, or section changes make old controls stale; ordinary chat remains available.
 A stale or rejected action is not learner assessment evidence. A skip or closure needs no replacement question.
 
