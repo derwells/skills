@@ -59,7 +59,7 @@ Field notes:
   - `"solid"`: the learner explained and applied the idea independently, with its relevant assumptions or limits. Later application can strengthen confidence that it persisted.
   Judge the whole conversation, including revealing questions and spontaneous corrections. A formal probe is not required. Self-report helps set pace but does not manufacture evidence of independent application. Move a judgment when evidence changes; do not downgrade solely because time passed or a check was declined.
 - **`evidence`** is an optional array of brief observations. Each entry has `session`, `task`, `observation`, and `support` (`"independent"`, `"guided"`, or `"demonstrated_by_tutor"`). Keep only observations that explain the current judgment, usually one to three. Tutor demonstration records exposure, not learner mastery. Do not invent historical evidence to populate this field; existing notes can suffice until new evidence appears.
-- For a course taught through fleet Discord, keep the source event or prompt reference with any evidence derived from a button or thread reply, so a future tutor can find the learner's actual response. The session log holds the fuller event trail. Confidence buttons are self-report for pacing, separate from evidence of understanding; they do not set `understanding` on their own.
+- For fleet Discord evidence, keep a source event or prompt reference so a future tutor can find the actual response. Keep the full event trail in the session log. Confidence is a self-report, separate from demonstrated understanding; it never sets `understanding` by itself.
 - **`notes`** (per concept) records live misconceptions, which explanations helped, and relevant unresolved questions. Keep the three or four most useful entries and remove resolved misconceptions. When a lesson closes, compact its notes to the current judgment, useful explanations, and open questions. Session history belongs in the logs.
 - **`seen_angles`** stores one-line fingerprints (session + gist) of problems and framings already used. Reuse a familiar case when it helps reconnect the argument; vary the important feature when assessing application beyond memorization. Cap at about five per concept, oldest dropped.
 - **`notes`** (top level) is free-form tutor memory — but only for what's *course-specific*: how this course is run, its goals and grounding, environment recipes it alone needs. If the course has a **contract** (see SKILL.md), it sits at the top of this field, numbered, and is read before everything else. Anything true of the learner in every course (environment, energy patterns, math background, analogy rules, probe craft) belongs in `.learning/learner.md`, not here — never duplicate it. Update sparingly; read always.
@@ -72,11 +72,71 @@ Optional fields that mature courses have found useful (add them when the course 
 
 ## Choosing warm-up items
 
-Choose a short revisit when it supports today's lesson or addresses an important unresolved confusion. A warm-up is optional. Unassessed concepts do not automatically become a testing backlog. In `design-partner` courses, use natural callbacks and optional discussion instead of deferred drills. When several prerequisite gaps impede progress, suggest focused review.
+For the initial trial, use at most one optional revisit at the next relevant lesson. Use a changed example. Use the existing `next_session` pointer when useful.
+Choose a distinction that supports the lesson or addresses an important unresolved confusion. Missing evidence creates no testing backlog.
+In `design-partner` courses, use natural callbacks and optional discussion. When prerequisite gaps impede progress, suggest focused review.
+Do not add due dates, reminders, or a scheduler without a separate request. A skip or long gap alone never downgrades understanding.
+
+## Distinguish response evidence
+
+Record what the learner demonstrated and what help preceded it. Keep these observations distinct:
+
+- Recognition: selecting a supplied correct answer. This supports a narrow claim about that choice in that context.
+- Explanation: giving the relevant reason. Record whether it was spontaneous, prompted, or supplied after feedback.
+- Independent application: using the idea in a changed example without supplied choices or help with the relevant step.
+
+A revealing question or spontaneous correction can also change a judgment. Preserve it with its context and source.
+Neither a correct button choice nor high confidence establishes independent application. Low confidence does not establish a misconception.
+A pending selection is ungraded context. A skip has no correctness value. Silence and assent add no assessment evidence.
+
+Use optional `kind` and `source` fields when they help distinguish new evidence. Existing entries without them remain valid:
+
+```json
+{
+  "session": 28,
+  "task": "compare combined volumes before and after a transfer",
+  "kind": "recognition",
+  "observation": "selected the equal-total option; supplied no reason",
+  "support": "independent",
+  "source": "sessions/2026-07-11.md#volume-check"
+}
+```
+
+Here, `independent` describes the support given for recognition. It does not turn recognition into independent application.
+Use `explanation` or `application` for those evidence kinds when appropriate. Describe questions and corrections directly in the observation.
+Keep only the observations needed to support the current judgment. Do not fill new fields retrospectively from guesses.
+
+## Answer-specific confidence and session events
+
+Keep detailed interaction records in the existing session log. See [discord.md](discord.md#course-evidence) for the transport fields.
+A new combined submission holds one answer and its optional confidence, with separate source references for each observation.
+Retain the prompt and question revision, selected option ID/text, answer revision, and source interaction/message/channel references.
+Record the help and feedback context. Deduplicate repeated delivery of the same source event.
+
+Confidence about a selected answer has scope `answer`. Preserve its `before_feedback`, `after_feedback`, or `unknown` timing.
+Use explicit interaction state and source context; nearby timestamps do not prove timing.
+Changing the pending answer clears its pending rating. Missing confidence stays missing; never supply a default value.
+For feedback, 1 and 2 mean uncertain, 3 means middle, and 4 and 5 mean confident.
+These ordered labels are neither probabilities nor understanding levels.
+
+Historical separate confidence prompts have scope `section`, including those paired with an answer prompt.
+Keep their original values and meaning. Do not infer answer-specific or pre-feedback confidence from pairing alone.
+If the historical timing is unavailable, leave it unknown. Add optional fields only when new evidence needs them.
+
+When chat or retirement closes a pending check, retain `selected_not_submitted` context without a grade.
+Record a free-text answer separately with its source and help or feedback context. Preserve later corrections as later observations.
+Do not count the pending selection as a second submitted attempt.
+
+Exclude synthetic demonstrations and agent-operated taps from learner evidence, session counts, and progress judgments.
+Use data-level demo markers and source provenance. A learner account can also operate a synthetic test.
+Keep demonstration evidence in implementation records, outside course records.
 
 ## Compatibility with existing courses
 
 Keep existing concept IDs, histories, course statuses, and demonstrated understanding. Add evidence only as useful observations become available; missing `evidence` is valid. An old `shaky` judgment may mean actual confusion or simply "not probed." Inspect its notes before changing it. Use `unassessed` only when insufficient evidence was the sole basis; preserve `shaky` when a documented misconception remains unresolved. Do not infer mastery from lesson completion or mass-migrate judgments.
+
+Preserve legacy section confidence and immediate-submit event history. Missing revisions, confidence, timing, or new evidence fields remain valid.
+Do not mass-migrate courses or synthesize historical values. Keep paused courses paused.
 
 Read legacy course style `tutor` as `tutorial`. Retire inherited probe floors and mandatory make-up checks in the current contract, while preserving explicit learner choices and useful revisit pointers. Record course maintenance as maintenance; it does not increment teaching sessions or hours.
 

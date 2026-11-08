@@ -63,3 +63,57 @@ unsupported claim that the learner lacks the prerequisite.
 
 These are preparation checks, not a visible checklist or a fixed lesson rhythm. Preserve the
 course's intellectual depth and independent practice goals while adapting participation.
+
+## Prepare useful checks
+
+Prepare a short series before teaching: a distinction, a changed example, and a later application when useful.
+Show only the next useful question. Stop the series for learner questions or missing prerequisites.
+During sustained teaching, try a check after roughly two or three short explanations.
+Adjust that frequency to the learner and the value of the answers. It is not a completion requirement.
+
+For each check, prepare these notes:
+
+- The distinction the answer should reveal.
+- The definitions, assumptions, and visible reference values the learner needs.
+- The correct answer and its reason.
+- The specific confusion behind each wrong option, called a distractor.
+- The verified source when the answer depends on current project behavior or another external factual claim.
+
+Use two to four plausible options. Do not add weak distractors to fill four positions.
+Keep opinions and questions without one correct answer ungraded. Repair ambiguous wording before drawing an assessment from it.
+Check a disputed answer against the actual source or calculation. Correct a tutor error explicitly and preserve the learner's correction.
+Supply a missing definition or step directly. Do not append another quiz to that repair by default.
+
+## Response paths
+
+These invented responses illustrate feedback. They are not learner records or evidence that this question measures broad understanding.
+
+The example has two tanks containing 100 and 50 litres. After a transfer, they contain 80 and 70 litres.
+Ask what happened to their combined volume:
+
+> A. It increased.
+> B. It stayed the same.
+> C. It decreased.
+
+The intended distinction is a change in distribution versus a change in total.
+B is correct: both totals equal 150 litres. A considers only the second tank; C considers only the first.
+State that the figures are final volumes before asking. No knowledge of the transfer mechanism is required.
+
+| Response | Feedback | Next action and evidence |
+|---|---|---|
+| B, confidence 5 | "Both totals are 150 litres. The distribution changed." | Move to a useful contrast. Record recognition in this example, without a mastery claim. |
+| B, confidence 2 | "B is right. Compare 100 + 50 with 80 + 70. Both totals are 150 litres." | Keep this example briefly. Offer another comparison only if useful; require no justification. |
+| A, confidence 5 | "The second tank gained 20 litres; the first lost 20. The combined volume stayed at 150 litres." | Check the wording and arithmetic first. Repair the distinction; require no immediate retry. |
+| Skip or "just tell me" | "The total stayed at 150 litres. Only the distribution changed." | Continue with no correctness judgment, downgrade, or replacement question. |
+| "B because both add to 150" | "Yes. The equal totals are the relevant reason." | Record an explanation within this example, which gives more evidence than the letter alone. |
+| "What does combined mean?" | "Combined volume means the volume in both tanks added together." | Repair the definition. Keep the question open if its premises remain valid. |
+
+For confidence 3 or no rating, confirm the correct answer and reason without assuming confidence or uncertainty.
+Missing confidence stays unknown. Treat 1 and 2 as uncertain, 3 as middle, and 4 and 5 as confident.
+These labels guide feedback; they do not estimate probabilities or determine understanding.
+
+A prepared contrast keeps the first tank at 100 litres and changes the second from 50 to 100 litres.
+Ask whether the total stayed fixed. No is correct: it rose from 150 to 200 litres.
+Later, invite another pair of volumes totaling 150 litres without supplied choices.
+An answer such as "90 and 60" shows limited independent application if the learner received no help.
+It does not establish general mastery. Keep these follow-ups optional and accept ordinary words throughout.

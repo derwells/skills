@@ -136,13 +136,21 @@ Put the general preference in learner notes and the specific library progression
 
 ## Participation and feedback
 
-Questions are teaching tools, not required turn endings. Ask one when its answer will reveal a distinction, guide the explanation, or exercise a useful decision, and the learner already has enough information to reason. It may precede, interrupt, or follow an explanation. When asking for an actual learner response, stop and wait rather than answering the question in the same turn. Do not append a generic comprehension check to every message or make continuation contingent on answering every question.
+Prepare a short series of questions across the concept and a changed example. During sustained teaching, try one check after roughly two or three short explanations. This is an adjustable starting point, not a quota or a proven optimum. Suspend that rhythm during learner questions, prerequisite repair, or a request to listen. Hold one check open at a time. Let the learner continue without answering it.
+
+Use multiple choice by default for learning checks. Keep ordinary questions and conversation in their natural form. Choose two to four plausible options that reveal a useful distinction. Supply the needed context before asking. Read [references/lesson-craft.md](references/lesson-craft.md) for question preparation and response examples. Wait for the learner's response before giving the answer.
+
+Offer optional confidence with a check, about the selected answer and before feedback. Ratings 1 and 2 mean uncertain; 3 is middle; 4 and 5 mean confident. These ordered self-reports are not probabilities or mastery scores. Missing confidence stays unknown. Give feedback after an answer even when confidence is absent. On other surfaces, use plain conversation unless their controls are verified.
 
 Move between a fully worked example, a partly completed problem, and independent application as the learner becomes ready. Explain the choices in a worked example. Later, leave a consequential step for the learner; eventually ask them to select an approach without naming it. Keep help available and scale the task to the course level. Practice should test reasoning, not incidental arithmetic or typing.
 
-Answer learner questions directly. Follow a productive detour, then connect it back to the lesson's question. "I don't know" usually calls for explanation or a worked step. If an attempt is partly correct, identify the sound part and the precise error, explain its consequence, and offer a useful next step. A hint is worthwhile when the learner has a foothold; repeated unproductive guesses mean the tutor should change the explanation or repair a prerequisite. Do not impose a fixed number of hints or retries.
+Answer learner questions directly. Follow a productive detour, then return to the lesson's question. "I don't know" usually calls for explanation or a worked step.
 
-Honor requests to listen, skip a check, or reduce practice. Record the limits of the evidence without creating mandatory make-up questions. If the learner says they know an idea, proceed at that level and watch how they use it. The tutor should be candid about uncertainty without making the learner prove every claim of familiarity.
+For a correct, confident choice, confirm the distinction and move forward provisionally. For a correct, uncertain choice, confirm the reasoning in the same example. For an incorrect choice, check the wording and answer key before correcting the specific error. A confident disagreement can reveal a tutor error.
+
+Identify the sound part of a partial answer. Explain the precise error and its consequence. Use a hint when the learner has a foothold. Repeated guesses call for a changed explanation or prerequisite repair. Ask for a short reason only when it changes what to teach next. Impose no fixed retry count.
+
+Honor requests to listen, skip, continue, reduce practice, or "just tell me." Explain and continue without make-up questions or an assessment penalty. Accept free-text answers and corrections. Record the limits of the evidence. If the learner says they know an idea, proceed at that level and watch how they use it.
 
 When teaching through a fleet Discord effort thread, read [references/discord.md](references/discord.md) for optional answer and confidence controls. Ordinary text conversation remains a complete way to teach and respond.
 
@@ -158,7 +166,7 @@ Read `references/notebooks.md` when creating or using a lesson notebook.
 
 ### Decide what comes next
 
-Base progress on the lesson aim and the conversation's evidence. Distinguish following a demonstration, making the relevant distinction, and applying the idea independently. Do not equate fluency, agreement, or completion with mastery.
+Base progress on the lesson aim and the conversation's evidence. Distinguish recognizing a supplied answer, explaining the reason, and applying the idea independently. Record the help given. A correct choice alone supports only narrow recognition evidence. Preserve revealing questions and spontaneous corrections as evidence. Do not equate fluency, agreement, or completion with mastery.
 
 Move on when the next step is productive. Revisit an unresolved idea when it matters; repair it now if the next argument depends on it. Reuse a familiar example to reconnect context when useful, then vary the feature that tests understanding. A fresh context helps distinguish reasoning from memorization, but novelty for its own sake wastes attention.
 
@@ -175,7 +183,9 @@ Thirty minutes is a guide to energy, not a coverage quota. A lesson may span ses
 
 Use `unassessed` when there is insufficient evidence; `shaky` for an observed confusion; `settling` for understanding with help or limited independent evidence; `solid` for explaining and applying the idea with its relevant limits. Record brief evidence and the support given. A revealing question or spontaneous correction can be evidence; a formal quiz is unnecessary. A delayed application can strengthen confidence that understanding persisted.
 
-Choose revisits for their relevance and evidence, not to clear a backlog of everything delivered. In review mode, select important distinctions or prerequisites and approach them through comparison, explanation, or application. If gaps accumulate, suggest a focused review instead of crowding every lesson with checks.
+For the initial trial, use at most one optional revisit at the next relevant lesson. Use a changed example. Use the existing course's next-session pointer when useful. Keep ad hoc continuity in the conversation unless the learner explicitly chooses a course. Missing evidence, skipped checks, and long gaps create no review debt or automatic downgrade. Add no scheduler, due dates, or reminders without a separate request.
+
+In review mode, select important distinctions or prerequisites for comparison, explanation, or application. If gaps accumulate, suggest a focused review instead of adding checks to every lesson. Exclude synthetic demonstrations and agent-operated taps from learner evidence, even when they use the learner's account.
 
 ## Curate and status
 
