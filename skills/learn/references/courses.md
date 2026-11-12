@@ -27,7 +27,13 @@ Older courses record an `understanding` label per concept (`unassessed`, `shaky`
 
 ## Recorded preferences
 
-`learner.md` and the course contract hold choices the learner made. Preferences about presentation stay in force: language, order of mathematics, figures, pace, energy. A recorded choice that conflicts with this method, such as reading-first lessons, no required questions, or an older course style (`tutor`, `tutorial`, `design-partner`), is neither silently obeyed nor silently dropped. Name the conflict once at the start of the resumed session, ask which should govern this course, and record the dated answer in the contract.
+`learner.md` and the course contract hold what the learner chose. Keep all of it as written.
+
+- **Presentation preferences stay in force**: language, order of mathematics, figures, pace, energy.
+- **Older teaching-method rules are superseded.** An earlier version of this skill wrote or recorded rules about how to teach: a course style (`tutor`, `tutorial`, `design-partner`), reading-first lessons, optional or rationed questions, a check cadence, multiple choice, confidence prompts. The method in `SKILL.md` replaces them. The learner chose this method by using this skill; do not ask them to choose again, course by course.
+- **Say it once and note it.** At the first resumed session, tell the learner in one line that the course now runs on questions and that its records are kept. Add one dated line to the contract that says the method changed. Leave the old rule text in place beside it.
+- **A later choice stands.** A choice the learner makes after that note, such as "only reading in this course", governs until they change it. Record it dated, in their words.
+- **Ask only about what is unresolved.** A course goal, scope, or target level that the records leave open is worth a question. An older rule that differs from the method is not.
 
 ## Close a course session
 

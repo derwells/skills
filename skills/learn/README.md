@@ -88,7 +88,7 @@ A concept in `progress.json` keeps its level and the checks behind it:
 }
 ```
 
-Courses written before the skill map keep everything they recorded. Their old labels (`shaky`, `settling`, `solid`) stay as history and are not converted to levels; the tutor places you again with a short diagnostic. If a course recorded a preference that conflicts with being questioned, such as reading-first lessons, the tutor asks you once which should govern that course.
+Courses written before the skill map keep everything they recorded. Their old labels (`shaky`, `settling`, `solid`) stay as history and are not converted to levels; the tutor places you again with a short diagnostic. Rules an older version recorded about how to teach, such as reading-first lessons or a course style, give way to the questions; the tutor says so once and notes the date. Preferences about presentation stay.
 
 ## Evals
 

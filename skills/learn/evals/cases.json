@@ -396,8 +396,13 @@
   "criteria": [
    {
     "id": "a",
-    "q": "Does the message point out that the course's recorded reading-first preference (questions optional) conflicts with teaching by questions, and ask the learner which should apply to this course?",
+    "q": "Does the message tell the learner that this course now runs on questions (or that the older reading-first rule no longer applies)?",
     "expect": "yes"
+   },
+   {
+    "id": "ask",
+    "q": "Does the message ask the learner to choose between the old reading-first approach and teaching by questions?",
+    "expect": "no"
    },
    {
     "id": "b",
@@ -408,6 +413,11 @@
     "id": "c",
     "q": "Does the message teach new course content (explain a Git concept) in this turn?",
     "expect": "no"
+   },
+   {
+    "id": "q",
+    "q": "Does the message ask the learner a question about Git for them to answer?",
+    "expect": "yes"
    },
    {
     "id": "files",
@@ -431,15 +441,7 @@
    },
    {
     "role": "tutor",
-    "text": "This course's contract says reading-first, with questions optional. The skill now teaches by asking questions. Which should govern this course?"
-   },
-   {
-    "role": "learner",
-    "text": "go with the questions for this course"
-   },
-   {
-    "role": "tutor",
-    "text": "I will ask a few questions on Unit 2, one at a time, to see where you are.\n\nFirst: in your own words, what is a branch in Git?"
+    "text": "This course was set up reading-first under the older tutor. It now runs on questions, one at a time. Your old notes stay as they are, and you can still ask to only read.\n\nI will ask a few questions on Unit 2 to see where you are.\n\nFirst: in your own words, what is a branch in Git?"
    },
    {
     "role": "learner",
@@ -506,10 +508,16 @@
     "expect": "yes"
    },
    {
-    "id": "choice",
+    "id": "kept",
     "type": "mechanical",
-    "check": "contract_choice_recorded",
-    "q": "The course notes record the learner's 2026-11-12 choice that questions govern this course, and still contain the original reading-first text.",
+    "check": "contract_text_kept",
+    "q": "Every line of the original course contract is still in the course notes.",
+    "expect": "yes"
+   },
+   {
+    "id": "noted",
+    "about": "added_course_text",
+    "q": "About the added text: does it say, with the date 2026-11-12, that this course now uses questions (that the teaching method changed from reading-first)?",
     "expect": "yes"
    }
   ]

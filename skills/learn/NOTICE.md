@@ -39,7 +39,7 @@ These are choices made in this collection. Jane Street's skill does not contain 
 - **Free text by default.** Answers are in the learner's own words. Options are offered only when the learner asks. A selected option counts as recognition and needs a stated reason before it is a check.
 - **A list of what is not a check**: silence, assent, "I know this", a confidence rating, a told answer, a bare selection.
 - **Saved courses**: the `.learning/` layout, `progress.json` with `level`, `level_set` and per-check evidence, session logs, course research, and the freshness policy.
-- **Older course records**: the `understanding` labels are kept as history and never converted to levels. A conflict between a recorded learner choice and this method is put to the learner once.
+- **Older course records**: the `understanding` labels are kept as history and never converted to levels. Older teaching-method rules in a course are superseded by this method without asking again; the old text stays and a dated note records the change.
 - **What a question needs**: the material in the message, new material stated before it is used, a direct answer to "wait, what is X?", checking the answer key before correcting the learner, figures, and teaching the code an exercise needs.
 - **Reading or listening on request**: honored as the learner's choice, earns no levels, creates no make-up queue.
 - **Channel support**: the fleet Discord adapter, where answer buttons are optional and a confidence rating is never used to set a level.
