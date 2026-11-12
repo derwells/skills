@@ -126,27 +126,35 @@ def diagnosed_levels_present(reply, ws):
     return head is None or (isinstance(head, int) and branch > head)
 
 
-def contract_choice_recorded(reply, ws):
-    """The original contract lines are intact, and text added to the course notes or the
-    curriculum carries the date 2026-11-12 together with the word "question"."""
+def _notes_text(progress):
+    notes = progress.get("notes", "")
+    if isinstance(notes, str):
+        return notes
+    return "\n".join(map(str, notes)) if isinstance(notes, list) else json.dumps(notes, ensure_ascii=False)
+
+
+def contract_text_kept(reply, ws):
+    """Every line of the original course contract is still in the course notes.
+    This says nothing about what was added; the judge reads the added text."""
     old, new = _load_pair(ws)
-    notes = new.get("notes", "")
-    notes = notes if isinstance(notes, str) else "\n".join(map(str, notes)) if isinstance(notes, list) else json.dumps(notes)
-    old_lines = old["notes"].split("\n")
-    if not all(line in notes for line in old_lines):
-        return False
-    added = notes
-    for line in old_lines:
+    notes = _notes_text(new)
+    return all(line in notes for line in old["notes"].split("\n"))
+
+
+def added_course_text(case, ws):
+    """Text the tutor added to the course notes and the curriculum, for the judge to read."""
+    old, new = _load_pair(ws)
+    added = _notes_text(new)
+    for line in old["notes"].split("\n"):
         added = added.replace(line, "")
-    fixture = (FIXTURES / "legacy-course" / ".learning" / "git-internals" / "curriculum.md").read_text().split("\n")
-    curriculum = (ws / "project" / ".learning" / "git-internals" / "curriculum.md").read_text().split("\n")
-    added += "\n" + "\n".join(line for line in curriculum if line not in fixture)
-    return any("question" in added[max(0, m.start() - 300):m.end() + 300].lower()
-               for m in re.finditer("2026-11-12", added))
+    before = (FIXTURES / case["workspace"] / ".learning" / "git-internals" / "curriculum.md").read_text().split("\n")
+    after = (ws / "project" / ".learning" / "git-internals" / "curriculum.md").read_text().split("\n")
+    extra = "\n".join(line for line in after if line not in before)
+    return (added.strip() + ("\n" + extra.strip() if extra.strip() else "")).strip()
 
 
 CHECKS = {f.__name__: f for f in (has_block_chars, legacy_untouched, progress_valid_json, legacy_labels_kept,
-                                  no_level_outside_diagnostic, diagnosed_levels_present, contract_choice_recorded)}
+                                  no_level_outside_diagnostic, diagnosed_levels_present, contract_text_kept)}
 
 
 def run_mechanical(case, reply, ws):
@@ -188,17 +196,28 @@ def tutor_one(case, args, template):
         row = {"case": case["id"], "reply": reply, "mechanical": run_mechanical(case, reply, ws), "verdicts": {}}
         if case.get("workspace"):
             row["files"] = changed_files(case, ws)
+            try:
+                row["added_course_text"] = added_course_text(case, ws)
+            except (OSError, ValueError, KeyError, TypeError):
+                row["added_course_text"] = ""
         return row
 
 
 def judge_one(case, row, args, template):
     judged = [c for c in case["criteria"] if c.get("type") != "mechanical"]
     questions = "\n".join(f"{c['id']}. {c['q']}" for c in judged)
+    extra = ""
+    if any(c.get("about") == "added_course_text" for c in judged):
+        extra = ("\nIn the same turn the tutor added this text to the course's notes file. Some questions are about it:\n\n"
+                 "<added>\n" + (row.get("added_course_text") or "(nothing was added)") + "\n</added>\n")
     prompt = (template.replace("{context}", case["context"]).replace("{transcript}", render_transcript(case["transcript"]))
-              .replace("{reply}", row["reply"]).replace("{questions}", questions))
+              .replace("{reply}", row["reply"]).replace("{extra}", extra).replace("{questions}", questions))
     with tempfile.TemporaryDirectory(prefix="learn-judge-") as tmp:
         text = CALLS[args.cli](prompt, tmp, args.model, args.effort, "")
     data = json.loads(re.search(r"\{.*\}", text, re.S).group(0))
+    if set(data) != {c["id"] for c in judged} and len(data) == len(judged):
+        # The judge sometimes relabels ids as a, b, c. Its answers are in question order.
+        data = dict(zip((c["id"] for c in judged), data.values()))
     row["verdicts"] = {c["id"]: {"answer": str(data[c["id"]]["answer"]).lower(), "quote": data[c["id"]].get("quote", "")}
                        for c in judged}
     return row

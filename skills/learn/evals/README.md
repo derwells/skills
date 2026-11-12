@@ -13,7 +13,7 @@ Every learner message here is scripted. None of it is evidence about a real lear
 - C09, C10, C14, C15: the skill map. A second independent check, "show progress", a failed review, and every subskill at target.
 - C13, C16-C19: learner moves. A picked option, "wait, what is HEAD", a request to only read, a claim to know the material, and a wrong answer inside the diagnostic.
 - C20: the same loop in a Discord thread.
-- C11, C12: a saved course written by an older version of the skill, in [`fixtures/legacy-course`](fixtures/legacy-course/.learning/learner.md). C11 resumes it. C12 saves state after a diagnostic, and [`run.py`](run.py) then checks the files: the old `understanding` labels and notes are unchanged, only diagnosed concepts have a `level`, and the learner's dated choice is added without removing the original contract text.
+- C11, C12: a saved course written by an older version of the skill, in [`fixtures/legacy-course`](fixtures/legacy-course/.learning/learner.md). Its contract says reading-first with optional questions. C11 resumes it: the tutor should say once that the course now runs on questions, not ask the learner to choose again, and start the diagnostic. C12 saves state after a diagnostic. [`run.py`](run.py) then checks the files: the old `understanding` labels and notes are unchanged, only diagnosed concepts have a `level`, and every line of the original contract is still there. Whether the added note records the change of method is a judged question; the judge reads the added text.
 
 ## Runs
 
@@ -25,21 +25,22 @@ Every learner message here is scripted. None of it is evidence about a real lear
 
 The Claude runs loaded no user settings, instructions, skills or MCP servers. The Codex run used an empty Codex home, and ran without Codex's own sandbox (`--codex-sandbox danger-full-access`) because that sandbox could not start on the test machine.
 
-Two things were redone after the first pass, and the saved results are the second pass:
+Several things were redone after the first pass. The saved results are the last pass:
 
 - C09 first asked two questions that both turned on deleting a branch. The tutor refused the raise and said the two answers were one check, which is what the skill asks for. The case now uses a second question about what a commit moves. C06, C09 and C20 were rerun in all three runs after their shared question was reworded to say the branch was already merged.
 - The first Codex run could not read any file, so its replies never saw the skill. All 20 Codex cases were rerun.
-- A review found that the C12 check for the learner's recorded choice could pass on an unrelated dated note. The check now looks only at added text, and the course files a tutor changes are saved in each result row under `files`.
+- A review found that the C12 check for the recorded choice could pass on an unrelated dated note. A text match cannot show what a note means, so that check was retired. The mechanical check now proves only that the original contract lines are kept, and the judge reads the added text. The course files a tutor changes are saved in each result row under `files`. Earlier passes on the retired check were not proof and are not in the saved results.
 - The saved-course rules then moved from `SKILL.md` to `references/courses.md`, so both runs of this skill were repeated in full on the final text.
+- The course rule then changed: older teaching-method rules are superseded without asking the learner again. C11 and C12 were rewritten for that and rerun in all three runs. The other 18 cases were not rerun after this last change; it touched `references/courses.md` and no file those cases depend on.
 
 ## Results
 
 <!-- results:start -->
 | Run | Criteria met | Cases with every criterion met |
 |---|---|---|
-| Previous skill, Claude Opus 5.5 | 31 of 62 | 5 of 20 |
-| This skill, Claude Opus 5.5 | 61 of 62 | 19 of 20 |
-| This skill, Codex gpt-6-astra | 62 of 62 | 20 of 20 |
+| Previous skill, Claude Opus 5.5 | 33 of 65 | 5 of 20 |
+| This skill, Claude Opus 5.5 | 64 of 65 | 19 of 20 |
+| This skill, Codex gpt-6-astra | 65 of 65 | 20 of 20 |
 
 | Case | Previous skill, Claude Opus 5.5 | This skill, Claude Opus 5.5 | This skill, Codex gpt-6-astra |
 |---|---|---|---|
@@ -53,8 +54,8 @@ Two things were redone after the first pass, and the saved results are the secon
 | C08 correct-answer | 3 of 3 | 3 of 3 | 3 of 3 |
 | C09 second-independent-check | 0 of 3 | 3 of 3 | 3 of 3 |
 | C10 show-progress | 2 of 2 | 2 of 2 | 2 of 2 |
-| C11 legacy-course-resume | 2 of 4 | 4 of 4 | 4 of 4 |
-| C12 legacy-course-save | 3 of 6 | 6 of 6 | 6 of 6 |
+| C11 legacy-course-resume | 3 of 6 | 6 of 6 | 6 of 6 |
+| C12 legacy-course-save | 4 of 7 | 7 of 7 | 7 of 7 |
 | C13 picked-an-option | 1 of 2 | 2 of 2 | 2 of 2 |
 | C14 failed-review | 1 of 3 | 3 of 3 | 3 of 3 |
 | C15 all-at-target | 0 of 2 | 2 of 2 | 2 of 2 |
@@ -75,9 +76,9 @@ It exits 1 if the recomputed tables differ from the ones above.
 
 ## Reading the results
 
-The previous skill met half the criteria because it taught a different way. On a wrong answer it gave the correct result and explained it (C04). It taught hash tables before asking anything (C01), corrected an answer in the middle of the diagnostic (C19), accepted a picked option without asking for a reason (C13), and declared the topic finished without an assessment (C15). In the Discord case it posted answer buttons with an optional confidence rating (C20). When saving the old course it kept the old labels but rewrote the notes on two concepts, and it replaced the original contract text where the current skill adds a dated entry beside it (C12). It already answered a one-off question plainly, honored "just tell me", and declined to mark a subskill done on the learner's word.
+The previous skill met half the criteria because it taught a different way. On a wrong answer it gave the correct result and explained it (C04). It taught hash tables before asking anything (C01), corrected an answer in the middle of the diagnostic (C19), accepted a picked option without asking for a reason (C13), and declared the topic finished without an assessment (C15). In the Discord case it posted answer buttons with an optional confidence rating (C20). Resuming the old course, it went straight into an explanation (C11). When saving it, it kept the old labels but rewrote the notes on two concepts, recorded no levels, and noted that the course stays reading-first (C12). It already answered a one-off question plainly, honored "just tell me", and declined to mark a subskill done on the learner's word.
 
-The current skill missed one criterion with Opus: after the third failed attempt its explanation ran longer than the six or so sentences the case allows (C05). Everything else passed in both runs. In C12 both tutors kept every old label and note, wrote levels only for the three diagnosed concepts, and recorded the learner's dated choice next to the original reading-first rule.
+The current skill missed one criterion with Opus: after the third failed attempt its explanation ran longer than the six or so sentences the case allows (C05). Everything else passed in both runs. In C11 both tutors said once that the course now runs on questions, did not ask the learner to choose, showed the unit at `?/5`, and asked a first diagnostic question. In C12 both kept every old label, note and contract line, wrote levels only for the three diagnosed concepts, and added a dated note that the method changed.
 
 ## Limits
 

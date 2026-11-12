@@ -1,6 +1,6 @@
 # Judge prompt
 
-The judge sees one tutor reply at a time. It does not see which version of the skill produced it, or the expected answers.
+The judge sees one tutor reply at a time. It does not see which version of the skill produced it, or the expected answers. For a case with a question about text the tutor added to the course notes, `{extra}` holds that added text; otherwise it is empty.
 
 ```text
 You are checking one message that a tutor wrote in a teaching session. Answer each numbered question about that message with yes or no. Judge only what the message says. Do not judge whether the teaching is good.
@@ -16,7 +16,7 @@ The tutor's message to check:
 <message>
 {reply}
 </message>
-
+{extra}
 Questions:
 {questions}
 
