@@ -1,0 +1,806 @@
+[
+ {
+  "id": "C01",
+  "name": "start-diagnostic",
+  "context": "A new conversation in a terminal chat. No course files exist.",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "teach me how hash tables work. ive used dicts in python for years but never looked inside"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the tutor say that it will first ask some questions to find out what the learner already knows?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message put exactly one question to the learner?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "Does the message explain how hash tables work (hashing, buckets, collisions or similar content) before the learner has answered anything?",
+    "expect": "no"
+   },
+   {
+    "id": "d",
+    "q": "Does the message offer lettered or numbered answer options to choose from?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C02",
+  "name": "one-off-question",
+  "context": "A new conversation in a terminal chat. The learner did not type /learn.",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "whats the difference between a process and a thread?"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message directly explain the difference between a process and a thread?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message start a tutoring routine: a diagnostic, a quiz question for the learner to answer, or a skill map?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C03",
+  "name": "unclear-intent",
+  "context": "A new conversation in a terminal chat. The learner did not type /learn.",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "can you help me with bayes theorem? i keep getting confused by it"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message ask the learner whether they want a quick answer or want to be taught the topic properly (or an equivalent short question about what kind of help they want)?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message contain a quiz or diagnostic question about Bayes' theorem itself?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C04",
+  "name": "wrong-answer",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "You are on `main`, which points at commit C3. You run `git branch feature` and stay on `main`. Then you make one new commit, C4. After that, which commit does `main` point at, and which does `feature` point at?"
+   },
+   {
+    "role": "learner",
+    "text": "feature points at C4 since its the branch i just made so the new commit goes there. main stays on C3"
+   }
+  ],
+  "note": "The learner is wrong. The commit moves `main` to C4; `feature` stays at C3.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message state the correct result (that `main` now points at C4, or that `feature` stays at C3)?",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message ask a narrower question about one step of the learner's reasoning or of the scenario?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "Does the message end with a question, with no hint, explanation or answer options after it?",
+    "expect": "yes"
+   },
+   {
+    "id": "d",
+    "q": "Does the message praise the learner or the attempt (for example 'great', 'good try', 'nice thinking')?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C05",
+  "name": "third-failed-attempt",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "You are on `main`, which points at commit C3. You run `git branch feature` and stay on `main`. Then you make one new commit, C4. After that, which commit does `main` point at, and which does `feature` point at?"
+   },
+   {
+    "role": "learner",
+    "text": "feature points at C4 since its the branch i just made so the new commit goes there. main stays on C3"
+   },
+   {
+    "role": "tutor",
+    "text": "Which branch were you on when you made the commit?"
+   },
+   {
+    "role": "learner",
+    "text": "main. but feature is the newer branch so git puts new work there right"
+   },
+   {
+    "role": "tutor",
+    "text": "What does `git branch feature` change about which branch you are on?"
+   },
+   {
+    "role": "learner",
+    "text": "hmm it creates feature and i think it moves me onto it. so the commit lands on feature. feature = C4, main = C3"
+   }
+  ],
+  "note": "This is the learner's third failed attempt at the same idea.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message now explain the correct result directly (the commit moves `main` to C4 and `feature` stays at C3, because `git branch` does not switch branches)?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Is that explanation short: about six sentences or fewer?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "After the explanation, does the same message ask a new question that tests the same idea in a different scenario or from a different angle?",
+    "expect": "yes"
+   },
+   {
+    "id": "d",
+    "q": "Does the message raise the learner's level or say the learner now understands this?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C06",
+  "name": "vague-answer",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "A branch with 500 commits on it, already merged into `main`, can be deleted instantly with `git branch -d`. Why is that so cheap?"
+   },
+   {
+    "role": "learner",
+    "text": "because branches are lightweight in git"
+   }
+  ],
+  "note": "The answer is a phrase, not a reason. The reason is that a branch is only a name that holds one commit hash.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message accept the answer as correct or credit the learner with understanding?",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message ask the learner to say more precisely what makes a branch lightweight or what deleting it removes?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "Does the message itself state the reason (that a branch is only a pointer or a small file holding one commit hash)?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C07",
+  "name": "just-tell-me",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "You are on `main`, which points at commit C3. You run `git branch feature` and stay on `main`. Then you make one new commit, C4. After that, which commit does `main` point at, and which does `feature` point at?"
+   },
+   {
+    "role": "learner",
+    "text": "just tell me, im fried"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message give the answer plainly (`main` points at C4 and `feature` at C3)?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message refuse, or press the learner to try before it gives the answer?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message raise a level or count this as something the learner demonstrated?",
+    "expect": "no"
+   },
+   {
+    "id": "d",
+    "q": "After the answer, does the message go back to questioning (it asks a next question)?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C08",
+  "name": "correct-answer",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "We move to HEAD. You are on `main` at C3 and run `git checkout feature`, where `feature` points at C2. Then you make a commit C5. Which names moved, and why?"
+   },
+   {
+    "role": "learner",
+    "text": "HEAD was pointing at main, checkout made HEAD point at feature instead. the new commit C5 has parent C2 and feature moves to C5 because HEAD is attached to feature. main doesnt move, still C3"
+   }
+  ],
+  "note": "The answer is correct and complete. It is the first check on HEAD in this session.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message contain praise such as 'great', 'excellent', 'perfect', 'nice work' or 'well done'? (A bare confirmation such as 'Right' or 'Correct' is not praise.)",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message raise HEAD to 4/5 or higher, or declare it mastered, on this one answer?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message ask a further question (a challenge to the answer or another question)?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C09",
+  "name": "second-independent-check",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "A branch with 500 commits on it, already merged into `main`, can be deleted instantly with `git branch -d`. Why is that so cheap?"
+   },
+   {
+    "role": "learner",
+    "text": "a branch is just a name with one commit hash in it. deleting it removes that one name, the commits arent touched"
+   },
+   {
+    "role": "tutor",
+    "text": "Right. That is one check on 'branch as a pointer'. I will come back to it.\n\nNow HEAD. You are on `main` at C3 and run `git checkout feature`, where `feature` points at C2. What changed inside the repository?"
+   },
+   {
+    "role": "learner",
+    "text": "HEAD now points at feature instead of main. no commits changed"
+   },
+   {
+    "role": "tutor",
+    "text": "Back to an earlier one. You are on `main`. Both `main` and `feature` point at commit C3. You make a new commit, C4. Where do `main` and `feature` point now, and why?"
+   },
+   {
+    "role": "learner",
+    "text": "main moves to C4 because im on it. feature stays at C3, its just a name sitting on that commit and nothing told it to move. a commit only moves the branch HEAD is on"
+   }
+  ],
+  "note": "This is the second correct answer on 'branch as a pointer'. The first question was about deleting a branch and this one is about what a commit moves, so the two checks are independent. The learner had no help and was not told the answer first.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message raise the level of 'branch as a pointer' above 2/5?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message show a text skill map with a row for each of the five subskills?",
+    "expect": "yes"
+   },
+   {
+    "id": "blocks",
+    "type": "mechanical",
+    "check": "has_block_chars",
+    "q": "The reply contains the block character U+2588.",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C10",
+  "name": "show-progress",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "You are on `main`, which points at commit C3. You run `git branch feature` and stay on `main`. Then you make one new commit, C4. After that, which commit does `main` point at, and which does `feature` point at?"
+   },
+   {
+    "role": "learner",
+    "text": "show progress"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message show a text skill map with all five subskills at the levels 3, 2, 2, 1 and 2?",
+    "expect": "yes"
+   },
+   {
+    "id": "blocks",
+    "type": "mechanical",
+    "check": "has_block_chars",
+    "q": "The reply contains the block character U+2588.",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C11",
+  "name": "legacy-course-resume",
+  "context": "A terminal chat in a project that has a saved course under `project/.learning/`. The course was written by an older version of the skill. The tutor may read the files.",
+  "workspace": "legacy-course",
+  "tools": "Read",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "/learn continue"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message point out that the course's recorded reading-first preference (questions optional) conflicts with teaching by questions, and ask the learner which should apply to this course?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message show any concept with a numeric level out of 5 that was derived from an old label (for example showing a 'solid' concept as 4/5)?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message teach new course content (explain a Git concept) in this turn?",
+    "expect": "no"
+   },
+   {
+    "id": "files",
+    "type": "mechanical",
+    "check": "legacy_untouched",
+    "q": "progress.json is byte-for-byte unchanged.",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C12",
+  "name": "legacy-course-save",
+  "context": "A terminal chat in a project that has a saved course under `project/.learning/`. The course was written by an older version of the skill. The tutor may read and write the files. Today's date is 2026-11-12 and this is session 7.",
+  "workspace": "legacy-course",
+  "tools": "Read,Write,Edit",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "/learn continue"
+   },
+   {
+    "role": "tutor",
+    "text": "This course's contract says reading-first, with questions optional. The skill now teaches by asking questions. Which should govern this course?"
+   },
+   {
+    "role": "learner",
+    "text": "go with the questions for this course"
+   },
+   {
+    "role": "tutor",
+    "text": "I will ask a few questions on Unit 2, one at a time, to see where you are.\n\nFirst: in your own words, what is a branch in Git?"
+   },
+   {
+    "role": "learner",
+    "text": "a name that points at one commit. it moves forward when you commit on it"
+   },
+   {
+    "role": "tutor",
+    "text": "You are on `main` at C3 and run `git checkout feature`, where `feature` points at C2. What changed inside the repository?"
+   },
+   {
+    "role": "learner",
+    "text": "it copies the files from feature over. i guess main gets updated to match too?"
+   },
+   {
+    "role": "tutor",
+    "text": "When can Git fast-forward a merge, and what does it do in that case?"
+   },
+   {
+    "role": "learner",
+    "text": "no idea"
+   },
+   {
+    "role": "tutor",
+    "text": "Last one: what does a merge commit have that an ordinary commit does not?"
+   },
+   {
+    "role": "learner",
+    "text": "i need to run. save state"
+   }
+  ],
+  "note": "Diagnostic answers: git.branch-pointer strong; git.head wrong; git.fast-forward no idea; git.merge-commit and git.detached-head not asked.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message confirm that the course state was saved?",
+    "expect": "yes"
+   },
+   {
+    "id": "valid",
+    "type": "mechanical",
+    "check": "progress_valid_json",
+    "q": "progress.json parses as JSON.",
+    "expect": "yes"
+   },
+   {
+    "id": "labels",
+    "type": "mechanical",
+    "check": "legacy_labels_kept",
+    "q": "Every concept keeps its original `understanding` label, notes and name.",
+    "expect": "yes"
+   },
+   {
+    "id": "nolevel",
+    "type": "mechanical",
+    "check": "no_level_outside_diagnostic",
+    "q": "No concept outside the three diagnosed ones has a `level`.",
+    "expect": "yes"
+   },
+   {
+    "id": "placed",
+    "type": "mechanical",
+    "check": "diagnosed_levels_present",
+    "q": "git.branch-pointer has an integer `level` from 0 to 5 that is higher than the level of git.head, if git.head has one.",
+    "expect": "yes"
+   },
+   {
+    "id": "choice",
+    "type": "mechanical",
+    "check": "contract_choice_recorded",
+    "q": "The course notes record the learner's 2026-11-12 choice that questions govern this course, and still contain the original reading-first text.",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C13",
+  "name": "picked-an-option",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "What does `git branch feature` do?"
+   },
+   {
+    "role": "learner",
+    "text": "can you give me options for this one, typing on my phone"
+   },
+   {
+    "role": "tutor",
+    "text": "A. It copies the commits into a new line of history.\nB. It creates a new name that points at the current commit.\nC. It creates a new branch and moves you onto it."
+   },
+   {
+    "role": "learner",
+    "text": "B"
+   }
+  ],
+  "note": "B is correct.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message ask the learner to give the reason for the choice in their own words (for example why B and not A or C)?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message raise a level, or treat the choice alone as proof that the learner understands?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C14",
+  "name": "failed-review",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5. Since the map below, 'commits as snapshots' was raised to 4/5 after two checks.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "```\ncommits as snapshots    [████████░░]  4/5  * at target\n```\n(other rows unchanged)"
+   },
+   {
+    "role": "tutor",
+    "text": "Before we go on, an earlier one. You change one line in one file of a 1,000-file project and commit. What does the new commit record about the other 999 files?"
+   },
+   {
+    "role": "learner",
+    "text": "nothing. a commit only stores the diff of what changed, so just that one line"
+   }
+  ],
+  "note": "The learner is wrong. A commit records a full snapshot: its tree refers to every file, and unchanged files reuse existing blobs.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message lower the level of 'commits as snapshots' below 4/5?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message state the correct answer outright (that the commit records a snapshot that refers to all 1,000 files)?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message ask a narrower question to revisit the idea?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C15",
+  "name": "all-at-target",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The target level is 4/5. Every subskill has reached it, as the map below shows.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████████░░ 80%\n-----------------------------------------------------------------\ncommits as snapshots    [████████░░]  4/5  * at target\nbranch as a pointer     [████████░░]  4/5  * at target\nHEAD                    [████████░░]  4/5  * at target\nmerge and fast-forward  [████████░░]  4/5  * at target\nstaging area            [████████░░]  4/5  * at target\n-----------------------------------------------------------------\n```"
+   },
+   {
+    "role": "learner",
+    "text": "nice. so are we done with this topic?"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message declare the topic finished without any further assessment?",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message announce a final assessment that covers all the subskills and ask its first question?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C16",
+  "name": "what-is-x",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "You run `git checkout` with the hash of commit C2 instead of a branch name. Where does HEAD point now, and what happens to the next commit you make?"
+   },
+   {
+    "role": "learner",
+    "text": "wait what is HEAD again"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message say directly what HEAD is, in about three sentences or fewer?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message treat the learner's question as a failed attempt, or lower a level?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message add a new, different quiz question beyond the one that was already open?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C17",
+  "name": "read-only-request",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "learner",
+    "text": "long day. can i just read today? no questions pls"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message agree and start explaining the topic?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message say that reading alone will not raise any level (or will not move the skill map)?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "Does the message end with a quiz question about the content that the learner is expected to answer?",
+    "expect": "no"
+   }
+  ]
+ },
+ {
+  "id": "C18",
+  "name": "claims-to-know",
+  "context": "An ad hoc session in a terminal chat. No course files exist. The learner asked to be taught how Git stores history. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "Next is the staging area, currently 2/5."
+   },
+   {
+    "role": "learner",
+    "text": "i know the staging area really well, use it every day. mark it done and skip"
+   }
+  ],
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message raise the staging area's level, or mark it done, on the learner's word alone?",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message either ask a question that checks the staging area, or move on while leaving its level unchanged?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C19",
+  "name": "diagnostic-wrong-answer",
+  "context": "A new ad hoc session in a terminal chat. No course files exist. The tutor is in the middle of the opening diagnostic.",
+  "transcript": [
+   {
+    "role": "learner",
+    "text": "teach me how git stores history. i use git daily but its magic to me"
+   },
+   {
+    "role": "tutor",
+    "text": "I will start with a few questions, one at a time, to see what you already know.\n\nFirst: when you run `git commit`, what gets saved?"
+   },
+   {
+    "role": "learner",
+    "text": "my staged changes get saved as a new commit"
+   },
+   {
+    "role": "tutor",
+    "text": "Second: what does that commit contain, as far as you know?"
+   },
+   {
+    "role": "learner",
+    "text": "the changes i made since the last commit, like a patch"
+   }
+  ],
+  "note": "The second answer is wrong (a commit is a snapshot, not a patch). The diagnostic is not finished.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message correct the learner or explain what a commit really contains?",
+    "expect": "no"
+   },
+   {
+    "id": "b",
+    "q": "Does the message ask another diagnostic question?",
+    "expect": "yes"
+   },
+   {
+    "id": "c",
+    "q": "Does the message put exactly one question to the learner?",
+    "expect": "yes"
+   }
+  ]
+ },
+ {
+  "id": "C20",
+  "name": "discord-thread",
+  "context": "An ad hoc session in a fleet Discord effort thread. No course files exist. The diagnostic is finished and the tutor showed the skill map below; the target level is 4/5. The tutor cannot run commands in this exercise: if it would run a command to post controls, it writes that command on its own line starting with `$ `.",
+  "transcript": [
+   {
+    "role": "tutor",
+    "text": "```\nTopic: how Git stores history            overall: ████░░░░░░ 40%\n-----------------------------------------------------------------\ncommits as snapshots    [██████░░░░]  3/5\nbranch as a pointer     [████░░░░░░]  2/5  <- current focus\nHEAD                    [████░░░░░░]  2/5\nmerge and fast-forward  [██░░░░░░░░]  1/5\nstaging area            [████░░░░░░]  2/5\n-----------------------------------------------------------------\n```\nWe start with 'branch as a pointer'."
+   },
+   {
+    "role": "tutor",
+    "text": "A branch with 500 commits on it, already merged into `main`, can be deleted instantly with `git branch -d`. Why is that so cheap?"
+   },
+   {
+    "role": "learner",
+    "text": "a branch is just a name with one commit hash in it. deleting removes the name, commits arent touched"
+   }
+  ],
+  "note": "The answer is correct. The tutor's next move is its next question.",
+  "criteria": [
+   {
+    "id": "a",
+    "q": "Does the message ask its next question as plain text for the learner to answer in their own words?",
+    "expect": "yes"
+   },
+   {
+    "id": "b",
+    "q": "Does the message offer answer options, or include a `fleet learn ask` command?",
+    "expect": "no"
+   },
+   {
+    "id": "c",
+    "q": "Does the message ask the learner for a confidence rating?",
+    "expect": "no"
+   }
+  ]
+ }
+]

@@ -2,16 +2,17 @@
 
 ## Unreleased
 
-- Prepare more frequent optional learning checks, with plausible choices and feedback adapted to the response.
-- Add combined Discord answer and confidence controls with explicit submission, while preserving existing prompts and course records.
-- Distinguish recognition, explanation, and independent application; exclude synthetic interactions from learner evidence.
+- Rebuilt teaching on the Socratic method from Jane Street's `socratic-tutor` skill (MIT, commit `7c6715c`): a guard against one-off questions, a diagnostic before any teaching, a skill map with levels 0-5, one question at a time, narrower questions after a wrong answer, strict evaluation, spaced review, and a final mixed assessment. `NOTICE.md` holds the license and lists what was kept and what was added.
+- Answers are in the learner's own words. Multiple choice is no longer the default form of a check, and the tutor no longer asks for a 1-5 confidence rating. A selected option counts as recognition and needs a stated reason.
+- `progress.json` records a `level` per concept with the checks behind it. The older `understanding` labels stay in existing courses as history and are never converted to levels. A recorded learner choice that conflicts with the method is put to the learner once.
+- `SKILL.md` is about half its former size. Saved-course rules moved to `references/courses.md`, which loads only for a course session.
+- Replaced `references/lesson-craft.md` with `references/question-craft.md`. Course creation now prepares a skill tree, diagnostic questions, and question sets in place of lesson notes.
+- Removed the `tutorial` and `design-partner` course styles for new courses, the professor-led lesson structure, the two-or-three-explanations check rhythm, and the limit of one optional revisit.
+- The Discord adapter keeps its answer buttons as an option the learner can ask for. Existing prompts and course records keep their meaning.
+- Added `evals/`: scripted teaching exchanges with free-text answers, run against the previous version and this one.
+- Simulated and agent-operated interactions never count as learner evidence.
 - Moved to `skills/learn/` when the repository became a collection of skills. Existing clones need the migration steps in the top-level README. The `learn-standalone` tag keeps the old single-skill layout.
-- Rebuilt teaching around professor-led lessons with a central question, developed reasoning, contrasts, and guided application.
-- Removed the fixed explanation length, mandatory stops, delayed-question rules, and automatic probe backlog.
-- Expanded course preparation to include worked solutions, comparisons, assumptions, and tasks with decreasing help.
-- Added `unassessed` understanding and optional evidence records; preserved existing course histories and explicit preferences.
-- Updated notebook guidance to keep prediction answers separate from executed demonstrations.
-- Added migration guidance for existing courses and revised curation to repair teaching materials as well as contracts.
+- Notebook guidance keeps answers to open questions out of the learner's view, and an exercise counts only when the tutor sees the learner's actual output.
 
 ## 1.1.0 — 2026-09-16
 

@@ -191,6 +191,10 @@ class HygieneTest(FixtureCase):
         self.assertFails(validate.check_hygiene, "email address")
         self.leak("1234+user@users.noreply.github.com and a@example.com")
         self.assertEqual(validate.check_hygiene(self.root), [])
+        self.leak("Copyright (c) 2026 Jane Street Group, LLC <opensource-contacts@" + "janestreet.com>")
+        self.assertEqual(validate.check_hygiene(self.root), [])
+        self.leak("mail " + "someone" + "@" + "janestreet.com")
+        self.assertFails(validate.check_hygiene, "email address")
 
     def test_version_pins_are_not_emails(self):
         self.leak("npm i pkg@2.0.0 and plugin@marketplace")

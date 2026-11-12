@@ -9,6 +9,8 @@ Release headings read `## <version> - <date>`. Versions are dates, `YYYY.MM.DD`,
 ### Changed
 
 - README opens with what the skills do instead of who wrote them; the title is now "Agent skills".
+- `learn` now teaches by the Socratic method adapted from Jane Street's `socratic-tutor` skill, with free-text answers and a skill map with levels 0-5. Details are in [skills/learn/CHANGELOG.md](skills/learn/CHANGELOG.md).
+- The hygiene check allows the contact address in a third-party copyright notice that must be reproduced verbatim.
 
 ## 2026.10.20 - 2026-10-20
 

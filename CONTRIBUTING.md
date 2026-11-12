@@ -23,6 +23,7 @@ python3 scripts/validate.py
 python3 -m unittest discover -s tests -v
 python3 skills/browser/benchmarks/reproduce.py
 python3 skills/model-check/evals/score.py
+python3 skills/learn/evals/score.py
 ```
 
 `validate.py` checks:

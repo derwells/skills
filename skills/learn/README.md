@@ -1,8 +1,10 @@
 # learn
 
-A portable skill for a professor-led course of study. Give it a topic and it researches a curriculum, prepares examples and contrasts, and leads lessons with room for questions. It keeps notes on what you understand and where you need help, so the course survives months of short sessions.
+A portable skill for a Socratic tutor. Give it a topic and it asks what you already know, draws a skill map with a level from 0 to 5 for each subskill, and then teaches by asking one question at a time. You answer in your own words. For a long course it researches a curriculum and saves the map, so the course survives months of short sessions.
 
-I made this because I couldn't study consistently after work. Textbook exercises want a full hour of deep focus and I never had that at 9pm. These lessons are short enough to do tired. The tutor remembers where you left off, you just show up.
+I made this because I couldn't study consistently after work. Textbook exercises want a full hour of deep focus and I never had that at 9pm. The tutor remembers where you left off, you just show up.
+
+The teaching method is adapted from Jane Street's [`socratic-tutor`](https://github.com/janestreet/agent_skills/blob/7c6715c29548a3b39d4a9545c698ee4fd17a7213/socratic-tutor/SKILL.md) skill (MIT). Saved courses, notebooks, figures and the Discord adapter are additions. [NOTICE.md](NOTICE.md) says which rule comes from where.
 
 ## Install
 
@@ -26,11 +28,14 @@ Needs web search (curriculum research), `jq` or `python3` (notebook validation),
 
 | Say | What happens |
 |---|---|
-| `/learn new bayesian statistics` | Researches and writes the curriculum. Expensive, done once |
-| `/learn` or "today's lesson" | ~30 min session |
-| `/learn status` | Progress across courses |
-| `/learn review` | Revisit shaky ideas, no new material |
+| `/learn bayes' rule` or "teach me bayes' rule" | Tutors the topic in the conversation. No files |
+| `/learn new bayesian statistics` | Researches and writes a saved course. Expensive, done once |
+| `/learn` or "today's lesson" | Continues the current topic or course, about 30 minutes |
+| `/learn status` | Skill maps across courses |
+| `/learn review` | Re-tests earlier subskills, no new material |
 | `/learn curate` | No lesson. Retune how the course is run |
+
+During a session you can say "show progress", "harder", "easier", "just tell me" (for the current question only), or "save state". A plain "explain X" gets a plain answer and no quiz.
 
 Courses live in `.learning/` at the project root:
 
@@ -38,10 +43,10 @@ Courses live in `.learning/` at the project root:
 .learning/
 ├── learner.md             # what the tutor knows about you, across courses
 └── <course>/
-    ├── curriculum.md      # units, lessons, the intuition each one must land
-    ├── progress.json      # tutor's notebook: what clicked, what's shaky, why
-    ├── materials/         # lesson arguments, worked examples, contrasts, applications
-    ├── notebooks/         # one Jupyter notebook per lesson
+    ├── curriculum.md      # goal, target level, units and their subskills
+    ├── progress.json      # the saved skill map and the checks behind each level
+    ├── materials/         # prepared questions and short explanations per unit
+    ├── notebooks/         # one Jupyter notebook per lesson, for exercises
     └── sessions/          # short log per session
 ```
 
@@ -49,31 +54,45 @@ Worth committing `.learning/` if the project is a repo.
 
 ## How it teaches
 
-- Leads each lesson around a question and develops the reasoning needed to answer it.
-- Uses deliberate comparisons to show what distinguishes concepts, why methods work, and where assumptions matter.
-- Connects examples to the actual mathematics. Explains choices and valid steps rather than merely naming them.
-- Adapts explanation length to the argument and your response. You can interrupt without having to direct the lesson yourself.
-- Moves from worked examples to guided and independent application when useful. Listening and optional discussion remain valid choices.
-- Uses executed notebook demonstrations and precise figures. Keeps pending prediction answers out of view.
-- Preserves your questions and pace. Thirty minutes is a guideline; a lesson can span sessions.
+- Starts with three to five diagnostic questions and teaches nothing until they are done.
+- Asks one question at a time and stops. You predict, explain why, find the flaw in a wrong claim, or apply the idea to a new case.
+- When you are wrong it asks a narrower question that shows the contradiction. It explains directly only after two or three failed attempts, then tests the same idea from another side.
+- States what you could not work out yourself, such as definitions, notation and library calls, in a few sentences.
+- Raises a level only after two independent checks, one of them without having just been told the answer. A vague answer does not count, and neither do "ok", "I know this" or a tapped option without a reason.
+- Re-tests earlier subskills without warning. A failed review lowers the level. Time away does not.
+- Ends a topic when every subskill reaches the target (4/5 by default) and you pass a mixed final assessment.
 
-Wrong answers are fine. What matters is you end up seeing why.
+The map looks like this:
 
-A concept entry in the notebook looks like this:
+```text
+Topic: recursion                        overall: ██████░░░░ 60%
+-----------------------------------------------------------------
+base cases            [████████░░]  4/5  * at target
+reachable stop        [██████░░░░]  3/5  <- current focus
+call stack            [████░░░░░░]  2/5
+tail calls            [..........]  ?/5  not placed yet
+-----------------------------------------------------------------
+```
+
+A concept in `progress.json` keeps its level and the checks behind it:
 
 ```json
 "stats.clt": {
-  "understanding": "settling",
+  "level": 3,
+  "evidence": [
+    { "session": 24, "task": "predict the shape of sample means", "result": "pass", "unprompted": true }
+  ],
   "notes": [
-    "clicked via the 'many small independent nudges' framing",
-    "still conflates convergence of the distribution with a sample path — try a simulation angle next"
+    "still conflates convergence of the distribution with a sample path"
   ]
 }
 ```
 
-That's what the tutor reads back three weeks later. It tracks which explanations helped and can reuse a familiar example before changing it to test a new distinction. Missing evidence is recorded as `unassessed`; a demonstrated confusion is `shaky`.
+Courses written before the skill map keep everything they recorded. Their old labels (`shaky`, `settling`, `solid`) stay as history and are not converted to levels; the tutor places you again with a short diagnostic. If a course recorded a preference that conflicts with being questioned, such as reading-first lessons, the tutor asks you once which should govern that course.
 
-Existing courses keep their history and scope. On resumption, the tutor updates upcoming materials and retires inherited brevity limits or mandatory probe queues while preserving your explicit preferences.
+## Evals
+
+[`evals/`](evals/README.md) has scripted teaching exchanges with free-text answers, run against the previous version of this skill and this one, and the judged results.
 
 ## License
 
