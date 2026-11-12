@@ -19,6 +19,7 @@ Run from a clean checkout of `main`, with [`gh`](https://cli.github.com) logged 
    python3 -m unittest discover -s tests -v
    python3 skills/browser/benchmarks/reproduce.py
    python3 skills/model-check/evals/score.py
+   python3 skills/learn/evals/score.py
    ```
 
 2. In `CHANGELOG.md`, rename `## Unreleased` to `## <version> - <date>` (for example `## 2026.10.20 - 2026-10-20`) and add a fresh empty `## Unreleased` heading above it. Check that the notes read well:

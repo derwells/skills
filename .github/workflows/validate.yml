@@ -25,3 +25,5 @@ jobs:
         run: python3 skills/browser/benchmarks/reproduce.py
       - name: Recompute model-check routing eval tables
         run: python3 skills/model-check/evals/score.py
+      - name: Recompute learn eval tables
+        run: python3 skills/learn/evals/score.py

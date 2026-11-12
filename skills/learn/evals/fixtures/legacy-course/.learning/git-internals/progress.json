@@ -1,0 +1,51 @@
+{
+  "course": "git-internals",
+  "created": "2026-09-01",
+  "estimated_total_hours": 8,
+  "hours_logged": 3.0,
+  "sessions_completed": 6,
+  "streak": { "current": 1, "best": 3, "last_session_date": "2026-10-01" },
+  "current": { "unit": 2, "lesson": "2.1" },
+  "lessons": {
+    "1.1": { "status": "complete", "sessions_spent": 2, "completed_on": "2026-09-08" },
+    "1.2": { "status": "complete", "sessions_spent": 3, "completed_on": "2026-09-24" },
+    "2.1": { "status": "in_progress", "sessions_spent": 1 }
+  },
+  "concepts": {
+    "git.blob": {
+      "name": "Blobs", "lesson": "1.1", "understanding": "solid", "last_touched_session": 2,
+      "notes": ["explained that two identical files share one blob without being asked"]
+    },
+    "git.tree": {
+      "name": "Trees", "lesson": "1.1", "understanding": "settling", "last_touched_session": 2,
+      "notes": ["follows the listing; unsure how nested folders are stored"]
+    },
+    "git.commit-snapshot": {
+      "name": "Commits as snapshots", "lesson": "1.2", "understanding": "solid", "last_touched_session": 5,
+      "evidence": [
+        { "session": 5, "task": "say what a commit records after a one-line change", "observation": "said the commit points at a full tree and reuses unchanged blobs", "support": "independent" }
+      ],
+      "notes": ["the 'photo of the whole folder, with reprints of unchanged pages' framing helped"]
+    },
+    "git.hash": {
+      "name": "Content hashes", "lesson": "1.2", "understanding": "settling", "last_touched_session": 5,
+      "notes": ["knows the hash names the content; has not connected it to why history cannot be edited in place"]
+    },
+    "git.branch-pointer": {
+      "name": "Branch as a pointer", "lesson": "2.1", "understanding": "settling", "last_touched_session": 6,
+      "notes": ["said a branch 'holds its commits'; corrected with help in session 6"]
+    },
+    "git.head": {
+      "name": "HEAD", "lesson": "2.1", "understanding": "shaky", "last_touched_session": 6,
+      "notes": ["thinks checkout copies a branch's files and updates the other branch too"]
+    },
+    "git.fast-forward": { "name": "Fast-forward", "lesson": "2.2", "understanding": "unassessed" },
+    "git.merge-commit": { "name": "Merge commits", "lesson": "2.2", "understanding": "unassessed" },
+    "git.detached-head": { "name": "Detached HEAD", "lesson": "2.3", "understanding": "unassessed" }
+  },
+  "seen_angles": {
+    "git.commit-snapshot": ["s5: one-line change in a large project"]
+  },
+  "next_session": "Continue lesson 2.1 with HEAD. Reading for 2.1 is in materials/unit-02-branches.md.",
+  "notes": "COURSE CONTRACT (2026-09-02).\n1. Reading-first. Each lesson is a short reading; questions are optional. Sam, 2026-09-02: \"I'd rather read than be quizzed.\"\n2. Use commit diagrams with labelled pointers."
+}

@@ -1,11 +1,15 @@
-# Lesson notebooks
+# Exercise notebooks
 
-Substantial runnable demonstrations and persistent figures live in Jupyter notebooks, one per lesson, at
+Practical exercises, runnable demonstrations, and persistent figures live in Jupyter notebooks, one per lesson, at
 `.learning/<course>/notebooks/<unit>-<lesson>-<slug>.ipynb`. The learner can open the notebook
-(VS Code, JupyterLab, or a browser over SSH) for experimentation; show lesson figures inline
-in Paseo so following the explanation does not require opening it. Short inline code and equations
-can support the dialogue without creating a notebook. Use a notebook when execution, a figure,
-or continued experimentation helps the lesson; do not interrupt an explanation to satisfy a format.
+(VS Code, JupyterLab, or a browser over SSH) to do an exercise; show figures inline
+in the conversation so that following a question does not require opening it. Short inline code and equations
+can carry a question without a notebook. Use a notebook when the learner must run or write
+something, or when a figure should persist; do not create one to satisfy a format.
+
+An exercise is a check only when you see the learner's actual output: the code they wrote, the
+value they got, the plot they produced. Ask them to paste it. Their description of what they
+did is not the output.
 
 A course may declare a different notebook tool in its "Course mode" section (marimo `.py`
 notebooks, for instance, when the learner wants git-diffable, reactive files). Default to
@@ -40,13 +44,13 @@ material saved to disk do not establish what is visible to the learner.
    Reading outputs and choosing the relevant calculation can be the learner's whole task.
 4. **Compare deliberately.** Where a distinction matters, show cases with the same setup
    and change the relevant feature. Align plots and scales where comparison requires it.
-   Leave space to inspect the change before revealing its explanation. Keep optional
-   derivations and solutions in separate cells or collapsed details. A prediction before execution is useful when the learner
-   has enough information to reason; explain first when they do not.
-5. **Reduce help as appropriate.** A worked example can lead to a partly completed cell
-   and then a new application. Leave consequential decisions to the learner, with setup
-   supplied. Participation follows the course mode and the learner's preference. A notebook
-   walkthrough is valid when they want to listen; missing exercise answers are not failures.
+   Ask for the prediction before the cell runs, when the learner has what they need to
+   reason; state the missing definition first when they do not. Keep solutions out of the
+   learner's notebook until the question is closed.
+5. **Reduce help as the level rises.** A partly completed cell suits level 3; a new
+   application with only the setup supplied suits level 4. Leave the consequential decision
+   to the learner. A walkthrough that the tutor runs is exposure and earns no level; an
+   exercise the learner skipped is not a failed check.
 6. **Keep notebooks per lesson, not per session.** A revisit adds cells to the lesson's
    notebook under a dated heading; it doesn't create a new file. Use sections so a lesson
    spanning sessions remains navigable.

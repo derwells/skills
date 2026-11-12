@@ -1,5 +1,7 @@
 # Examples
 
+These sessions predate the Socratic rewrite. The tutor in them explains much more and asks much less than the current skill does, and its pick-one questions are no longer the default. I keep them as a record of real sessions. For the current behavior see [`../evals/`](../evals/README.md).
+
 Real sessions from my Bayesian statistics course, as they appeared in the terminal. Figures were drawn by the tutor mid-session and pushed to my phone over Telegram; they are re-rendered here from the tutor's code. My messages are as typed, most of them dictated.
 
 - [A prior that looked harmless](a-prior-that-looked-harmless.md). One full session: two warm-up probes, then a lesson on priors that look weak but are secretly aggressive, more parameters than data points, and what dropping a variable really is. Includes the tutor's own end-of-session miss list.

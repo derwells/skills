@@ -46,6 +46,8 @@ HYGIENE_PATTERNS = [
 ]
 EMAIL = re.compile(r"[\w.+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}")
 ALLOWED_EMAIL_DOMAINS = {"users.noreply.github.com", "noreply.github.com", "example.com", "example.org"}
+# Role addresses that appear in third-party copyright notices, which must be reproduced verbatim.
+ALLOWED_EMAILS = {"opensource-contacts@janestreet.com"}
 SKIP_DIRS = {".git", "__pycache__", "node_modules"}
 
 
@@ -187,7 +189,10 @@ def check_hygiene(root):
                 if pattern.search(line):
                     errors.append(f"{rel}:{lineno}: {label}")
             for match in EMAIL.finditer(line):
-                domain = match.group(0).rsplit("@", 1)[1].lower()
+                address = match.group(0).lower()
+                if address in ALLOWED_EMAILS:
+                    continue
+                domain = address.rsplit("@", 1)[1]
                 if domain not in ALLOWED_EMAIL_DOMAINS:
                     errors.append(f"{rel}:{lineno}: email address")
     return errors

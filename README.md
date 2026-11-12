@@ -6,7 +6,7 @@ Skills for coding agents: running a course of study (`learn`), getting past logi
 
 | Skill | Use it for | How it starts | Needs |
 |---|---|---|---|
-| [learn](skills/learn) | A long course of study: researches a curriculum, leads short lessons, keeps notes on what you understand. | `/learn`, or asking for a lesson | Web search and file write access. `jq` or `python3` to validate notes; Jupyter via `uv` for notebook lessons. |
+| [learn](skills/learn) | A Socratic tutor: a diagnostic, a skill map with levels 0-5, one question at a time, and saved courses for long study. | `/learn`, or asking to be taught | Web search and file write access. `jq` or `python3` to validate notes; Jupyter via `uv` for notebook lessons. |
 | [access](skills/access) | Getting an agent past logins, consent screens and dashboards with no API. Tries an official API or CLI first, then a saved browser script, then exploring the page, and asks you only for MFA, CAPTCHA or a locked vault. | A task behind a login | Shell access. For browser steps, the `browser` skill's tools. For password fills, a password manager CLI you have already unlocked, such as Bitwarden's `bw`. |
 | [browser](skills/browser) | Driving web pages: explores with agent-browser, saves flows that work as Playwright scripts, and keeps test browsers separate from anything real. Pairs with `access`. | Before an agent drives a web page | [agent-browser](https://github.com/vercel-labs/agent-browser), Python [Playwright](https://playwright.dev/python/) and a local Chromium. The optional Jev step also needs your own runner and a TypeSafe API key. |
 | [model-check](skills/model-check) | Writes a small TLA+ model of real code, checks it with TLC, and replays it against real runs. For a concrete ordering or concurrency bug that focused tests can't settle, or when you ask for a model check. | A rare ordering failure, an uncertain multi-service protocol, or asking for TLA+ | Java 17+ and `tla2tools.jar`. |
@@ -100,7 +100,7 @@ Without a tag, pin a commit hash the same way. Run `git checkout main` and pull 
 
 Sources the skills draw on are cited inside them. The main ones:
 
-- `learn` bases its teaching choices on Schwartz and Bransford's [A Time for Telling](https://www.wright.edu/sites/www.wright.edu/files/uploads/2017/Feb/event/Schwartz_Bransford_1998_TimeForTelling.pdf) and the IES practice guide [Organizing Instruction and Study to Improve Student Learning](https://ies.ed.gov/ncee/wwc/PracticeGuide/1).
+- `learn` adapts its teaching method from Jane Street's [`socratic-tutor`](https://github.com/janestreet/agent_skills) skill (MIT; see [skills/learn/NOTICE.md](skills/learn/NOTICE.md)). Its question design also draws on Schwartz and Bransford's [A Time for Telling](https://www.wright.edu/sites/www.wright.edu/files/uploads/2017/Feb/event/Schwartz_Bransford_1998_TimeForTelling.pdf) and the IES practice guide [Organizing Instruction and Study to Improve Student Learning](https://ies.ed.gov/ncee/wwc/PracticeGuide/1).
 - `model-check` is built on Leslie Lamport's [TLA+](https://lamport.azurewebsites.net/tla/tla.html) and its model checker TLC. Its warning about textbook drift comes from [SysMoBench](https://arxiv.org/abs/2509.23130), and Boris Cherny's [post](https://x.com/bcherny/status/2102543349102338309) on Lean and TLA+ is its example of the approach.
 - `browser` uses Vercel's [agent-browser](https://github.com/vercel-labs/agent-browser) (Apache-2.0) and Microsoft's [Playwright](https://playwright.dev/python/). Neither is bundled here.
 

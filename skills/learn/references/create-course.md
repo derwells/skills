@@ -1,52 +1,57 @@
-# Create a course and prepare teaching materials
+# Create a course and prepare its questions
+
+A saved course is the Socratic method in `SKILL.md` with a researched skill tree and files that survive between sessions. Creating one is expensive and done once.
 
 ## Establish the destination
 
-Read `.learning/learner.md` and check for overlapping courses first. Infer what the conversation establishes; ask only for missing information that changes the course. Establish the learner's background, what they want to understand or do, intended depth, available time, and any deadline.
+Read `.learning/learner.md` and check for overlapping courses first. Infer what the conversation establishes; ask only for missing information that changes the course. Establish what the learner wants to be able to do, the target level (4/5 by default, 5/5 for full mastery), available time, and any deadline.
 
-Default to a professor-led tutorial. Participation can range from mostly listening to substantial problem solving without changing the intellectual level. Use `design-partner` when the user wants learning centered on their own work. Do not force a choice between being drilled and being briefed.
+Do not ask the learner to rate their own level. The diagnostic places it.
 
 ## Research the course
 
-Use real university syllabi, textbooks, primary research, and well-developed lectures to establish prerequisites, scope, and examples. Select a coherent source backbone and explain what each source contributes. Verify precise claims before teaching them. For broad gathering, use available subagents when authorized; the main tutor remains responsible for the synthesis and checked sources.
+Use real university syllabi, textbooks, primary research, and well-developed lectures to establish prerequisites, scope, and examples. Select a coherent source backbone and say what each source contributes. Verify precise claims before you build a question on them. For broad gathering, use available subagents when authorized; the tutor remains responsible for the synthesis and the checked sources.
 
-Research the difficult distinctions as well as the topic list: what learners commonly confuse, which comparisons reveal the difference, and what prerequisite makes a derivation understandable. A source's reputation alone does not establish that its example fits this learner. Keep useful sources attached to the relevant teaching notes.
+Research the hard distinctions as well as the topic list: what learners commonly confuse, which comparison shows the difference, and which prerequisite makes a derivation reachable. These become questions. Keep useful sources attached to the relevant material.
 
-## Write the curriculum
+## Write the skill tree
 
-`curriculum.md` contains the course goal, course mode and level, expected workload, prerequisite map, then units and lessons. Give honest estimates and let lessons span sessions when needed. For each lesson, record:
+`curriculum.md` holds the course goal, target level, expected workload, prerequisite map, and the skill tree. The tree has two levels: units are branches, and each unit has 4-10 concepts, which are the subskills on the map. Give each concept a stable ID. Give honest estimates; a concept may span sessions.
 
-- Its central question and the reasoning or task the learner should be able to perform afterward.
-- Stable concept IDs and prerequisites, including connections to earlier lessons.
-- Where code matters, the unfamiliar library operations or coding ideas to teach in that lesson, and a small input-to-output bridge to its real example. Distinguish reading code from writing it independently; select libraries by course need. Read [code-reading.md](code-reading.md) when preparing these examples.
-- The essential distinction or argument, with a promising example or contrast.
-- The mathematical or conceptual starting point, and which definitions must precede the example. For a learner who prefers math first, plan the equation or derivation before its instances; do not impose analogy-first ordering.
-- A suitable application that can reveal understanding. Scale its independence and difficulty to the intended level.
+For each concept, record:
 
-Plan later opportunities to use important ideas in different contexts and choose between methods without being told which one to apply. Include derivations, readings, problem sets, or projects when the course goals need them. An advanced course should reach the intended depth, with prerequisite support along the way.
+- What the learner can do at levels 3, 4, and 5, in one line each.
+- Its prerequisites, including concepts in earlier units.
+- The distinction that learners most often miss, with a promising contrast.
+- The definitions, notation, and conventions that must be told before any question uses them.
+- Where code matters, the unfamiliar library operations the exercise needs. Read [code-reading.md](code-reading.md) when preparing these.
+
+Plan where important concepts return in later units. Those returns are the spaced review, and they let the learner choose a method without being told which one applies.
+
+A `Course mode` section records the target level and any choices the learner made about pace or delivery. Record a learner's explicit request for a different way of working there, dated, in their words.
 
 ## Prepare the first two units
 
-Write `materials/unit-NN-<slug>.md` as notes a tutor can teach from. For each lesson, prepare:
+Write `materials/unit-NN-<slug>.md` as notes a tutor can ask from. For each concept, prepare what [question-craft.md](question-craft.md) lists:
 
-1. **Question and argument.** The problem being answered, why earlier ideas are insufficient, and the path through the explanation. Include the reasoning between steps, not just headings.
-2. **Worked example.** A tractable case with a checked solution. Explain the choices, not only the operations. Connect the result to the general claim, including the actual mathematics when relevant.
-3. **Contrasts and boundaries.** Select a useful neighboring concept, near miss, changed assumption, or alternative method. Specify what is held fixed, what changes, the expected result, and why. Include the tutor's explanation and identify what the learner can infer before hearing it. Do not force every type into every lesson.
-4. **Representations.** The figure, equation, code, or source passage that makes the argument visible. State how the representations connect. For code, include the relevant intermediate values and shapes, the mapping from concept to API, and enough explanation to read it without a documentation detour. For comparable figures, specify consistent scales and labels where appropriate.
-5. **Likely confusions and responses.** What a mistaken answer could mean, how to distinguish plausible causes, and which explanation or prerequisite repair would help. Avoid a queue of questions the learner must answer.
-6. **Practice with decreasing help.** A consequential step the learner could supply, followed by an unfamiliar case or choice of method when ready. Include worked answers and hints for the tutor. In `design-partner`, keep these as optional discussion material.
-7. **Sources and limits.** Links for technical claims; assumptions, approximations, and open disagreements where relevant.
+1. **Diagnostic questions** for the unit: 3-5, easy to hard, with what each answer places.
+2. **Questions of several kinds**: a prediction, a "why", a flawed claim, a new case, a connection. Include the checked answer and the material each question must show.
+3. **Likely wrong answers**, each with the narrower question that exposes the contradiction.
+4. **New material**: the few sentences that state what cannot be derived.
+5. **Fallback explanation and re-test**: the direct explanation for use after 2-3 failed attempts, and a question from a different angle.
+6. **A practical exercise** where tools allow, with the output to check.
+7. **A level-5 question**: an edge case or adversarial claim.
+8. **Unit assessment**: at least one question per concept and one integrative problem, held back until every concept is at target.
+9. **Sources and limits**: links for technical claims; assumptions, approximations, and open disagreements.
 
-These are preparation requirements, not a seven-part script to recite in chat. Use the learner's response to choose which pieces to teach. If an idea genuinely needs no contrast, explain it directly rather than inventing a misleading comparison.
+These are preparation, not a script. Show the learner one question at a time.
 
-For mathematical lessons, use [lesson-craft.md](lesson-craft.md). Prepare natural stopping points that leave an example or equation available for private thought. An application can occur later; a fully explained comparison followed immediately by a required answer is not the only form of participation.
+A compact example: for recursive termination, hold the integer input fixed and compare a self-call on unchanged input, a decreasing input with no stopping case, and a decreasing input that reaches a stopping case. The flawed claim is "it has a base case, so it stops", tested with a decrement of two and a stopping case at zero on an odd input. The narrower question asks the learner to list the value of `n` in each call. The level-5 question moves the idea to a shrinking list.
 
-A compact example of useful preparation: for recursive termination, hold the integer input fixed and compare self-calls with unchanged input, decreasing input without a stopping condition, and decreasing input that reaches a stopping condition. Trace each. Then test the apparent fix with a decrement of two and a stopping condition at zero: on positive odd input it never reaches zero. The tutor's explanation must connect the stopping condition, progress, and input domain. A new application could use a shrinking list rather than an integer.
+## Make the first session ready
 
-## Make the first lesson ready
+Where code or figures help, prepare an exercise notebook using `references/notebooks.md`. Execute and inspect it; keep answers to pending questions out of the learner's view. Do not create a notebook merely to satisfy a format.
 
-Where code or figures help, prepare a lesson notebook using `references/notebooks.md`. Execute and inspect demonstrations; keep prediction answers separate from the learner's view until the comparison is discussed. Do not create a notebook merely to satisfy a format.
+Initialize `progress.json` using `references/progress-schema.md`. Every concept starts with no `level`. Present the course's purpose, target level, workload, and first unit. Run the first session, starting with the diagnostic, only if the learner asks for it in the same sitting.
 
-Initialize `progress.json` using `references/progress-schema.md`. Concepts without evidence are `unassessed`, or absent until taught. Present the course's purpose, level, workload, and first lesson. Run the lesson in the same sitting only if requested.
-
-Prepare later units when the learner is within one unit of needing them. For an existing course, apply this preparation standard to the current and next lessons first. Preserve the course's scope and identifiers; expand useful existing notes instead of replacing the entire syllabus. Use `references/freshness.md` for current-practice topics.
+Prepare later units when the learner is within one unit of needing them. For an existing course, apply this standard to the current and next units first. Preserve the course's scope and identifiers; expand useful existing notes instead of replacing the syllabus. Use `references/freshness.md` for fast-moving topics.
